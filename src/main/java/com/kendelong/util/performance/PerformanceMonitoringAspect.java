@@ -14,7 +14,7 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 
 @Aspect
 @ManagedResource(objectName="com.redhen:service=performanceMonitor")
-public class MonitoringAspect
+public class PerformanceMonitoringAspect
 {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
