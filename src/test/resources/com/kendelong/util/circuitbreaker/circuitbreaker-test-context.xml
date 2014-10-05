@@ -1,0 +1,21 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+						http://www.springframework.org/schema/jee 
+	                    http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+						http://www.springframework.org/schema/aop
+						http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+
+	<aop:aspectj-autoproxy/>
+
+	<bean id="myService" class="com.kendelong.util.circuitbreaker.MyService"/>
+	<bean id="myService2" class="com.kendelong.util.circuitbreaker.MyService"/>
+
+	<bean name="kendelong.admin.circuitbreaker:service=dummy" class="com.kendelong.util.circuitbreaker.CircuitBreakerAspect" scope="prototype"/>
+	
+	<bean id="circuitBreakerPostprocessor" class="com.kendelong.util.circuitbreaker.JmxExporterStub">
+	</bean>
+</beans>
