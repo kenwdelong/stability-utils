@@ -3,7 +3,7 @@ package com.kendelong.util.performance;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -13,7 +13,7 @@ import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 @Aspect
-@ManagedResource(objectName="com.redhen:service=performanceMonitor")
+@ManagedResource(objectName="com.kendelong:service=performanceMonitor")
 public class PerformanceMonitoringAspect
 {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
