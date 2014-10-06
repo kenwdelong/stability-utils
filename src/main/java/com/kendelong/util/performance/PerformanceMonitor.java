@@ -71,7 +71,7 @@ public class PerformanceMonitor
 		long now = getTime();
 		long delta = now - startTime.get();
 		if(delta == 0) return 0;
-		return 1.0*getNumberOfAccesses()/delta;
+		return 1000.0*getNumberOfAccesses()/delta;
 	}
 	
 	public double getAccessesPerMinute()

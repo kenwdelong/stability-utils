@@ -53,8 +53,7 @@ public class JmxExportingAspectPostProcessor implements BeanPostProcessor
 							 */
 							Object target = aaja.getAspectInstanceFactory().getAspectInstance();
 							oname = new ObjectName(onameString);
-							registerMBean(oname, target);
-							logger.info("Exported " + beanName + " to JMX as " + oname.toString());
+							registerMBean(oname, target, beanName);
 						}
 						catch(Exception e)
 						{
@@ -68,11 +67,12 @@ public class JmxExportingAspectPostProcessor implements BeanPostProcessor
 	}
 
 
-	protected void registerMBean(ObjectName oname, Object target)
+	protected void registerMBean(ObjectName oname, Object target, String beanName)
 	{
 		try
 		{
 			mbeanExporter.registerManagedResource(target, oname);
+			logger.info("Exported " + beanName + " to JMX as " + oname.toString());
 		}
 		catch(MBeanExportException e)
 		{
