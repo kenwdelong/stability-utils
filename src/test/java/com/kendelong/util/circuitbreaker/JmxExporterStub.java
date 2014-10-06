@@ -14,7 +14,7 @@ public class JmxExporterStub extends JmxExportingAspectPostProcessor
 	}
 
 	@Override
-	protected void registerMBean(ObjectName oname, Object target)
+	protected void registerMBean(ObjectName oname, Object target, String beanName)
 	{
 		pojo = target;
 	}
