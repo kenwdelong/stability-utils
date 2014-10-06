@@ -12,6 +12,7 @@ import org.springframework.aop.aspectj.AbstractAspectJAdvice;
 import org.springframework.aop.framework.Advised;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.jmx.export.MBeanExportException;
 import org.springframework.jmx.export.MBeanExporter;
 
 public class JmxExportingAspectPostProcessor implements BeanPostProcessor
@@ -69,7 +70,15 @@ public class JmxExportingAspectPostProcessor implements BeanPostProcessor
 
 	protected void registerMBean(ObjectName oname, Object target)
 	{
-		mbeanExporter.registerManagedResource(target, oname);
+		try
+		{
+			mbeanExporter.registerManagedResource(target, oname);
+		}
+		catch(MBeanExportException e)
+		{
+			logger.warn("Error registering MBean [" + oname + "]");
+			// TODO probably we should unregister and retry on  javax.management.InstanceAlreadyExistsException
+		}
 	}
 
 
