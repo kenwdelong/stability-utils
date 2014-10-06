@@ -1,5 +1,7 @@
 package com.kendelong.util.spring;
 
+import java.util.Map;
+
 import javax.management.ObjectName;
 
 import org.aopalliance.aop.Advice;
@@ -9,15 +11,16 @@ import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AbstractAspectJAdvice;
 import org.springframework.aop.framework.Advised;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.jmx.export.MBeanExporter;
-
-import com.kendelong.util.circuitbreaker.CircuitBreakerAspect;
 
 public class JmxExportingAspectPostProcessor implements BeanPostProcessor
 {
 	private MBeanExporter mbeanExporter;
+	
+	private Map<Class<?>, String> annotationToServiceNames;
+	
+	private String jmxDomain;
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
@@ -34,13 +37,12 @@ public class JmxExportingAspectPostProcessor implements BeanPostProcessor
 				if(advice instanceof AbstractAspectJAdvice)
 				{
 					AbstractAspectJAdvice aaja = (AbstractAspectJAdvice) advice;
-					Class<?> pojoClass = aaja.getAspectJAdviceMethod().getDeclaringClass();
-					// TODO parameterize aspect, make a map?
-					if(pojoClass.equals(CircuitBreakerAspect.class))
+					Class<?> aspectPojoClass = aaja.getAspectJAdviceMethod().getDeclaringClass();
+					String serviceType = annotationToServiceNames.get(aspectPojoClass);
+					if(serviceType != null)
 					{
 						ObjectName oname;
-						// TODO parameterize service and domain
-						String onameString = "myapp.admin.circuitbreaker:service=circuitbreaker,bean=" + beanName;
+						String onameString = jmxDomain + ":service=" + serviceType + ",bean=" + beanName;
 						try
 						{
 							/* as long as the aspect is marked prototype, each advised bean
@@ -87,6 +89,30 @@ public class JmxExportingAspectPostProcessor implements BeanPostProcessor
 	public void setMbeanExporter(MBeanExporter mbeanExporter)
 	{
 		this.mbeanExporter = mbeanExporter;
+	}
+
+
+	public Map<Class<?>, String> getAnnotationToServiceNames()
+	{
+		return annotationToServiceNames;
+	}
+
+
+	public void setAnnotationToServiceNames(Map<Class<?>, String> annotationToServiceNames)
+	{
+		this.annotationToServiceNames = annotationToServiceNames;
+	}
+
+
+	public String getJmxDomain()
+	{
+		return jmxDomain;
+	}
+
+
+	public void setJmxDomain(String jmxDomain)
+	{
+		this.jmxDomain = jmxDomain;
 	}
 
 }

@@ -16,6 +16,14 @@
 
 	<bean name="kendelong.admin.circuitbreaker:service=dummy" class="com.kendelong.util.circuitbreaker.CircuitBreakerAspect" scope="prototype"/>
 	
-	<bean id="circuitBreakerPostprocessor" class="com.kendelong.util.circuitbreaker.JmxExporterStub">
+	<!-- This is a subclass of the JmxExportingPostProcessor -->
+	<bean id="jmxExporterStub" class="com.kendelong.util.circuitbreaker.JmxExporterStub">
+		<property name="annotationToServiceNames">
+			<map>
+				<entry key="com.kendelong.util.circuitbreaker.CircuitBreakerAspect" value="circuitbreaker"/>
+			</map>
+		</property>
+		<property name="jmxDomain" value="app.mystuff"/>
 	</bean>
+	
 </beans>
