@@ -13,17 +13,17 @@ import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 @Aspect
-@ManagedResource(objectName="com.kendelong:service=performanceMonitor")
+@ManagedResource(description="Monitor basic performance metrics")
 public class PerformanceMonitoringAspect
 {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private final Map<String, PerformanceMonitor> monitors = new ConcurrentHashMap<>();
 	
-	//@Around("within(com.myapp.service.*)")  WORKS
-	//@Around("bean(*Service) or bean(*Controller)")  WORKS
+	//@Around("within(com.myapp.service.*)")  // WORKS
+	@Around("bean(*Service) or bean(*Controller)")  // WORKS
 	// proxying controllers caused them not to be picked up as controllers anymore. Do they need interfaces?
-	@Around("@within(org.springframework.stereotype.Service)")
+	//@Around("@within(org.springframework.stereotype.Service)")
 	public Object monitorInvocation(ProceedingJoinPoint pjp) throws Throwable
 	{
 		String classKey = StringUtils.substringAfterLast(pjp.getSignature().getDeclaringTypeName(), ".");
