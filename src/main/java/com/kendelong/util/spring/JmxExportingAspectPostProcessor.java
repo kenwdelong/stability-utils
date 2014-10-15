@@ -15,6 +15,32 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.jmx.export.MBeanExportException;
 import org.springframework.jmx.export.MBeanExporter;
 
+/**
+ * This bean can export AspectJ-style aspects to JMX when registered.  For example:
+ * 
+ * <pre>
+ * {@code
+	<bean class="com.kendelong.util.circuitbreaker.CircuitBreakerAspect" scope="prototype"/>
+			
+	<bean class="com.kendelong.util.spring.JmxExportingAspectPostProcessor" lazy-init="false">
+		<property name="mbeanExporter" ref="mbeanExporter"/>
+		<property name="annotationToServiceNames">
+			<map>
+				<entry key="com.kendelong.util.circuitbreaker.CircuitBreakerAspect" value="circuitbreaker"/>
+			</map>
+		</property>
+		<property name="jmxDomain" value="app.mystuff"/>
+	</bean>  
+   }
+	</pre>
+ * 
+ * Important properties to set are the jmxDomain to use for the ONames of the MBeans,
+ * and the value of the map which will be also used for the OName.  OName structure is 
+ *      jmxDomain:service=[map value],bean=[original advised bean name]
+ * 
+ * @author Ken DeLong
+ *
+ */
 public class JmxExportingAspectPostProcessor implements BeanPostProcessor
 {
 	private MBeanExporter mbeanExporter;
@@ -76,8 +102,8 @@ public class JmxExportingAspectPostProcessor implements BeanPostProcessor
 		}
 		catch(MBeanExportException e)
 		{
+			// TODO if InstanceAlreadyExistsException retry; is it the cause?
 			logger.warn("Error registering MBean [" + oname + "]");
-			// TODO probably we should unregister and retry on  javax.management.InstanceAlreadyExistsException
 		}
 	}
 

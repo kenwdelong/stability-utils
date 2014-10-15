@@ -17,16 +17,16 @@ import org.springframework.jmx.export.annotation.ManagedResource;
  * 
  * <pre>
  * {@code
- * 	<bean id="concurrencyThrottleJmxExporter" class="com.kendelong.util.spring.interceptor.JmxExportingBeanNameAutoproxyCreator" lazy-init="false">
-		<property name="jmxInterceptorClass" value="com.kendelong.util.concurrency.ConcurrencyLimitingInterceptor" />
-		<property name="exporter" ref="callableJmxExporter" />
-		<property name="prefix" value="myapp.admin.concurrencythrottle" />
-		<property name="serviceName" value="concurrencyThrottle"/>
-		<property name="beanNames">
-			<list>
-				<value>MyService1</value>
-			</list>
+	<bean class="com.kendelong.util.concurrency.ConcurrencyLimitingAspect" scope="prototype"/>
+			
+	<bean class="com.kendelong.util.spring.JmxExportingAspectPostProcessor" lazy-init="false">
+		<property name="mbeanExporter" ref="mbeanExporter"/>
+		<property name="annotationToServiceNames">
+			<map>
+				<entry key="com.kendelong.util.concurrency.ConcurrencyLimitingAspect" value="concurrencyThrottle" />
+			</map>
 		</property>
+		<property name="jmxDomain" value="app.mystuff"/>
 	</bean>
 	}
 	</pre>

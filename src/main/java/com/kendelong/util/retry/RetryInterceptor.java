@@ -25,18 +25,22 @@ import org.springframework.jmx.export.annotation.ManagedResource;
  * Configuration is like
  * <pre>
  * ${@code
- * 	<bean id="concurrentRetryInterceptor" class="com.kendelong.util.concurrency.ConcurrentOperationRetryInterceptor">
-		<property name="order" value="1" />
+	<bean class="com.kendelong.util.retry.RetryInterceptor" scope="prototype">
 		<property name="exceptionClassesToRetry">
 			<list>
-				<value>org.hibernate.StaleObjectStateException</value>
-				<value>org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException</value>
-				<value>java.io.EOFException</value>
-				<value>com.mysql.jdbc.exceptions.jdbc4.CommunicationsException</value>
-				<value>org.hibernate.PessimisticLockException</value>
-				<value>org.springframework.dao.CannotAcquireLockException</value>
+				<value>java.lang.IllegalArgumentException</value>
 			</list>
 		</property>
+	</bean>
+		
+	<bean class="com.kendelong.util.spring.JmxExportingAspectPostProcessor" lazy-init="false">
+		<property name="mbeanExporter" ref="mbeanExporter"/>
+		<property name="annotationToServiceNames">
+			<map>
+				<entry key="com.kendelong.util.retry.RetryInterceptor" value="retriedOperations" />
+			</map>
+		</property>
+		<property name="jmxDomain" value="app.mystuff"/>
 	</bean>
  * }
  * </pre>

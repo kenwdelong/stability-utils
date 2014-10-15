@@ -30,31 +30,23 @@ import com.kendelong.util.spring.JmxExportingAspectPostProcessor;
  * 
  * Note that a unique instance is created for each proxied service.
  * 
- * To configure with "old style AOP" which lets you export each breaker as an MBean, use something like this:
+ * To configure with "AspectJ style AOP" which lets you export each breaker as an MBean, use something like this:
  * 
  * <pre>
  * {@code
-  	<bean id="circuitBreakerJmxExporter" class="com.kendelong.util.spring.JmxExportingBeanNameAutoproxyCreator" lazy-init="false">
-		<property name="jmxInterceptorClass" value="com.kendelong.util.circuitbreaker.CircuitBreakerAspect" />
-		<property name="exporter" ref="callableJmxExporter" />
-		<property name="prefix" value="myapp.admin.circuitbreaker" />
-		<property name="serviceName" value="circuitBreaker" />
-		<property name="graphiteClient" ref="graphiteClient" />
-		<property name="beanNames">
-			<list>
-				<value>MyService</value>
-				<value>MyService2</value>
-			</list>
-		</property>
-		<property name="extraProperties">
+	<bean class="com.kendelong.util.circuitbreaker.CircuitBreakerAspect" scope="prototype"/>
+			
+	<bean class="com.kendelong.util.spring.JmxExportingAspectPostProcessor" lazy-init="false">
+		<property name="mbeanExporter" ref="mbeanExporter"/>
+		<property name="annotationToServiceNames">
 			<map>
-				<entry key="failureThreshold" value="15"/>
-				<entry key="recoveryTimeout" value="30000"/>
+				<entry key="com.kendelong.util.circuitbreaker.CircuitBreakerAspect" value="circuitbreaker"/>
 			</map>
 		</property>
-	</bean>
-	}
-	</pre>
+		<property name="jmxDomain" value="app.mystuff"/>
+	</bean>  
+   }
+   </pre>
  * 
  * See the javadoc for the individual states for deeper explanation.
  * 
