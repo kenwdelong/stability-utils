@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,6 +15,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.springframework.core.Ordered;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
+
+import com.kendelong.util.monitoring.graphite.GraphiteClient;
 
 /**
  * Make sure the "order" property on this is lower than the transaction interceptor's order.
@@ -62,17 +65,33 @@ public class RetryInterceptor implements Ordered
 	private final Map<String, AtomicInteger> failedMethods = new ConcurrentHashMap<String, AtomicInteger>(); 
 	
 	private final Log logger = LogFactory.getLog(this.getClass());
+	
+	private GraphiteClient graphiteClient;
 
 	@Around("@annotation(com.kendelong.util.retry.RetryableOperation)")
 	public Object doConcurrentOperation(ProceedingJoinPoint pjp) throws Throwable
 	{
+		String key = null;
+		if(graphiteClient != null)
+		{
+			String classKey = StringUtils.substringAfterLast(pjp.getSignature().getDeclaringTypeName(), ".");
+			String methodName = pjp.getSignature().getName();
+			key = "retryInterceptor." + classKey + "." + methodName;
+			graphiteClient.increment(key + ".accesses");
+		}
+		
+		accesses.incrementAndGet();
 		int numAttempts = 0;
 		Exception concurrencyFailureException;
 		do
 		{
-			accesses.incrementAndGet();
-			if(numAttempts > 0) retriedOperations.incrementAndGet();
-
+			if(numAttempts > 0)
+			{
+				// It's a retry; log it
+				retriedOperations.incrementAndGet();
+				if(graphiteClient != null) graphiteClient.increment(key + ".retries");
+			}
+			
 			numAttempts++;
 			try
 			{
@@ -180,6 +199,16 @@ public class RetryInterceptor implements Ordered
 		}
 		builder.append("</tbody></table>");
 		return builder.toString();
+	}
+
+	public GraphiteClient getGraphiteClient()
+	{
+		return graphiteClient;
+	}
+
+	public void setGraphiteClient(GraphiteClient graphiteClient)
+	{
+		this.graphiteClient = graphiteClient;
 	}
 
 }
