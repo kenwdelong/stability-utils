@@ -4,12 +4,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
+
+import com.kendelong.util.monitoring.graphite.GraphiteClient;
 
 /**
  * This is an interceptor that will prevent more than a certain number of threads accessing a given resource
@@ -36,15 +39,26 @@ import org.springframework.jmx.export.annotation.ManagedResource;
  */
 @Aspect
 @ManagedResource(description="An interceptor that limits the number of threads that can be in a component at any one time")
-public class ConcurrencyLimitingAspect implements MethodInterceptor
+public class ConcurrencyLimitingAspect
 {
 	private final AtomicInteger threadLimit = new AtomicInteger(20);
 	private final AtomicInteger threadCount = new AtomicInteger();
 	private final AtomicInteger tripCount = new AtomicInteger();
+	
+	private GraphiteClient graphiteClient;
 
 	@Around("@annotation(com.kendelong.util.concurrency.ConcurrencyThrottle)")
 	public Object applyConcurrencyThrottle(ProceedingJoinPoint pjp) throws Throwable
 	{
+		String key = null;
+		if(graphiteClient != null)
+		{
+			String classKey = StringUtils.substringAfterLast(pjp.getSignature().getDeclaringTypeName(), ".");
+			String methodName = pjp.getSignature().getName();
+			key = "concurrencyThrottle." + classKey + "." + methodName;
+			graphiteClient.increment(key + ".accesses");
+		}
+		
 		Object result;
 		try
 		{
@@ -52,6 +66,7 @@ public class ConcurrencyLimitingAspect implements MethodInterceptor
 			if(threadNum > getThreadLimit())
 			{
 				tripCount.incrementAndGet();
+				if(graphiteClient != null) graphiteClient.increment(key + ".trips");
 				throw new ConcurrencyLimitExceededException("This thread exceeded the thread limit of " + getThreadLimit());
 			}
 			result = pjp.proceed();
@@ -64,30 +79,7 @@ public class ConcurrencyLimitingAspect implements MethodInterceptor
 		return result;
 		
 	}
-
 	
-	@Override
-	public Object invoke(MethodInvocation methodInvocation) throws Throwable
-	{
-		Object result;
-		try
-		{
-			int threadNum = threadCount.incrementAndGet();
-			if(threadNum > getThreadLimit())
-			{
-				tripCount.incrementAndGet();
-				throw new ConcurrencyLimitExceededException("This thread exceeded the thread limit of " + getThreadLimit());
-			}
-			result = methodInvocation.proceed();
-		}
-		finally
-		{
-			threadCount.decrementAndGet();
-		}
-		
-		return result;
-	}
-
 	@ManagedAttribute(description="The maximum number of threads allowed in the component at one time")
 	public int getThreadLimit()
 	{
@@ -116,6 +108,16 @@ public class ConcurrencyLimitingAspect implements MethodInterceptor
 	public void resetStatistics()
 	{
 		tripCount.set(0);
+	}
+
+	public GraphiteClient getGraphiteClient()
+	{
+		return graphiteClient;
+	}
+
+	public void setGraphiteClient(GraphiteClient graphiteClient)
+	{
+		this.graphiteClient = graphiteClient;
 	}
 	
 }
