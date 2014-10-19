@@ -47,6 +47,9 @@ with retry attempts while it is suffering.
 
 The aspect uses the GoF State Pattern for the implementation.
 
+Note that in Spring AOP, only one aspect instance proxies the entire bean, even if more than one method is annotated. So the state of the 
+component will be shared across method calls.
+
 Configuration is the same as for the Performance Monitor above.
 
 # Concurrency Throttle
@@ -61,6 +64,9 @@ Annotate methods to be throttled with the `ConcurrencyThrottle` annotation.
 
 Configuration is the same as for the Performance Monitor above.
 
+Note that in Spring AOP, only one aspect instance proxies the entire bean, even if more than one method is annotated. So the state of the 
+component will be shared across method calls.
+
 # Retry Interceptor
 
 Sometimes an operation that fails should simply be retried. The classic example of this is an optimistic concurrency control exception. Assuming
@@ -70,6 +76,9 @@ exception names that you want to catch and retry.  Up to a certain number (*maxR
 Annotate methods to be retried with the `RetryableOperation` annotation.
 
 Configuration is the same as for the Performance Monitor above.
+
+Note that in Spring AOP, only one aspect instance proxies the entire bean, even if more than one method is annotated. So the state of the 
+component will be shared across method calls.
 
 # Graphite Monitoring
 
