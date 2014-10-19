@@ -143,3 +143,6 @@ It's a bit clunky, as it was developed back in the Spring 2.x days, but included
 # HTTP Connection Service
 A wrapper for Apache httpclient.  Hopefully it makes the simple operations easy, while giving sophisticated control over timeouts and other
 important attributes.  Httpclient configuration is not exactly the most intuitive that you might run across... 
+
+This code was originally written for httpclient 3.1, then ported to 4.1.  Now it's upgraded for 4.3.  The APIs are quite different in these
+versions.  This latest work has not yet been battle-tested.  Beware!
