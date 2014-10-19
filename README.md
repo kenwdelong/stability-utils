@@ -91,6 +91,7 @@ Now if you check your Graphite server, you'll have a graph called "myapp.logins"
 to a graph instead of a log file.
 
 Bucket names are prefixed with strings that you set in the Spring configuration:
+
 	<bean class="com.kendelong.util.monitoring.graphite.GraphiteClient">
 		<property name="serverEnv" value="prod" />
 		<property name="appName" value="website" />
@@ -98,15 +99,21 @@ Bucket names are prefixed with strings that you set in the Spring configuration:
 		<property name="host" value="my.statsd.host" />
 		<property name="port" value="my.statsd.port" />
 	</bean>
+	
 This will yield a prefix of `prod.website.tomcat.hostname`.  So if you type
+
 	graphiteClient.increment("login.success");
+	
 the final bucket is  `prod.website.tomcat.hostname.login.success`.
 
 There is also a log4j (v1) appender that writes the log levels to a graphite bucket. You need to configure it in the Spring application context:
+
 	<bean class="com.kendelong.util.monitoring.graphite.GraphiteAppender">
 		<property name="graphiteClient" ref="graphiteClient"/>
 	</bean>
+	
 as well as in your log4j configuration
+
 	<appender name="GRAPHITE" class="com.kendelong.util.monitoring.graphite.GraphiteAppender"/>
 	<root>
 		...
