@@ -86,7 +86,9 @@ Graphite is a real-time charting tool developed at Etsy. It's easy to use and co
 Graphite and bucket up some of the calls.
 
 Add the `GraphiteClient` to your application context. Use it like you would use a logger; at appropriate places in the code type
+
 	graphiteClient.increment("myapp.logins");
+	
 Now if you check your Graphite server, you'll have a graph called "myapp.logins" with a realtime graph. It's that simple, it's like logging
 to a graph instead of a log file.
 
