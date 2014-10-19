@@ -27,7 +27,7 @@ import org.springframework.jmx.export.annotation.ManagedResource;
  * {@code
 	<bean id="servicePerformanceMonitor" class="com.kendelong.util.performance.PerformanceMonitoringAspect" scope="prototype"/>	
 		
-	<bean id="circuitBreakerJmxExporter" class="com.kendelong.util.spring.JmxExportingAspectPostProcessor" lazy-init="false">
+	<bean id="aspectJmxExporter" class="com.kendelong.util.spring.JmxExportingAspectPostProcessor" lazy-init="false">
 		<property name="mbeanExporter" ref="mbeanExporter"/>
 		<property name="annotationToServiceNames">
 			<map>

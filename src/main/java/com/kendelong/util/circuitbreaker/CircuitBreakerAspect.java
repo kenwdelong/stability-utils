@@ -16,7 +16,6 @@ import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.kendelong.util.monitoring.graphite.GraphiteClient;
-import com.kendelong.util.spring.JmxExportingAspectPostProcessor;
 
 /**
  * This is the main Circuit Breaker class.  It is a stateful object, the state variable
@@ -30,13 +29,12 @@ import com.kendelong.util.spring.JmxExportingAspectPostProcessor;
  * 
  * Note that a unique instance is created for each proxied service.
  * 
- * To configure with "AspectJ style AOP" which lets you export each breaker as an MBean, use something like this:
- * 
+ * Configuration is like
  * <pre>
  * {@code
 	<bean class="com.kendelong.util.circuitbreaker.CircuitBreakerAspect" scope="prototype"/>
 			
-	<bean class="com.kendelong.util.spring.JmxExportingAspectPostProcessor" lazy-init="false">
+	<bean id="aspectJmxExporter" class="com.kendelong.util.spring.JmxExportingAspectPostProcessor" lazy-init="false">
 		<property name="mbeanExporter" ref="mbeanExporter"/>
 		<property name="annotationToServiceNames">
 			<map>
@@ -44,7 +42,7 @@ import com.kendelong.util.spring.JmxExportingAspectPostProcessor;
 			</map>
 		</property>
 		<property name="jmxDomain" value="app.mystuff"/>
-	</bean>  
+	</bean>
    }
    </pre>
  * 
@@ -80,14 +78,6 @@ public class CircuitBreakerAspect
 		state.set(CLOSED_STATE);
 	}
 	
-	/**
-	 * This one works with AspectJ annotations, but there's no way to export the aspect
-	 * to JMX - many of the beans are not eligible for postprocessing (see {@link JmxExportingAspectPostProcessor})
-	 * 
-	 * @param pjp
-	 * @return
-	 * @throws Throwable
-	 */
 	@Around("@annotation(com.kendelong.util.circuitbreaker.CircuitBreakable)")
 	public Object applyCircuitBreaker(ProceedingJoinPoint pjp) throws Throwable
 	{
