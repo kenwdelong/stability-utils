@@ -12,6 +12,39 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
+/**
+ * This interceptor will log all calls to the proxied bean, and record max, min, and average response times, call rates,
+ * and number of exceptions at both the class and method level.  By default it proxies every bean whose name ends with
+ * "Controller" or "Service", as well as any bean annotated with the MonitorPerformance annotation.
+ * 
+ * Like all aspects, you must create one in each ApplicationContext that you wish to use it in.  Be sure to give the prototype instance
+ * an id; if not, the auto-assigned id's in the different ApplicationContexts will conflict.
+ * 
+ * Export the bean to JMX (no point in monitoring response times if you can't see the results!) using the 
+ * com.kendelong.util.performance.WebPerformanceMonitoringAspect
+ * 
+ * <pre>
+ * {@code
+	<bean id="servicePerformanceMonitor" class="com.kendelong.util.performance.PerformanceMonitoringAspect" scope="prototype"/>	
+		
+	<bean id="circuitBreakerJmxExporter" class="com.kendelong.util.spring.JmxExportingAspectPostProcessor" lazy-init="false">
+		<property name="mbeanExporter" ref="mbeanExporter"/>
+		<property name="annotationToServiceNames">
+			<map>
+				<entry key="com.kendelong.util.performance.PerformanceMonitoringAspect" value="performance" />
+			</map>
+		</property>
+		<property name="jmxDomain" value="app.mystuff"/>
+	</bean>
+
+ * }
+ * </pre>
+ * 
+ * @author Ken DeLong
+ * @see com.kendelong.util.performance.MonitorPerformance
+ * @see com.kendelong.util.spring.JmxExportingAspectPostProcessor
+ *
+ */
 @Aspect
 @ManagedResource(description="Monitor basic performance metrics")
 public class PerformanceMonitoringAspect
@@ -20,10 +53,7 @@ public class PerformanceMonitoringAspect
 
 	private final Map<String, PerformanceMonitor> monitors = new ConcurrentHashMap<>();
 	
-	//@Around("within(com.myapp.service.*)")  // WORKS
-	@Around("bean(*Service) or bean(*Controller)")  // WORKS
-	// proxying controllers caused them not to be picked up as controllers anymore. Do they need interfaces?
-	//@Around("@within(org.springframework.stereotype.Service)")
+	@Around("bean(*Service) or bean(*Controller) or @within(com.kendelong.util.performance.MonitorPerformance)")
 	public Object monitorInvocation(ProceedingJoinPoint pjp) throws Throwable
 	{
 		String classKey = StringUtils.substringAfterLast(pjp.getSignature().getDeclaringTypeName(), ".");
