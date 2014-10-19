@@ -6,7 +6,10 @@ import org.apache.log4j.spi.LoggingEvent;
 
 
 /**
- * A log4j log appender that sends the log levels to the Graphite server.  Because this appender is instantiated by the
+ * A log4j log appender that sends the log levels to the Graphite server. With this appender, you will get charts of how many log
+ * messages are being written by category: one chart for ERROR, one for WARN, etc.  
+ * 
+ * Because this appender is instantiated by the
  * log4j framework, it can't be autowired.  In order to transfer the reference of the graphiteClient from the Spring
  * context to this appender, a second instance of the appender is created in applicationContext.xml just for the purpose
  * of harvesting the reference and transferring it to the static variable here.  It's a sucky hack, but I couldn't think
