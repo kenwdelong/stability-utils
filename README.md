@@ -138,4 +138,8 @@ instrumented should create an internal final instance of `StatisticsProvider` an
 therein to the provider instance. Then you can create an empty subclass of `StatisticsProviderMBeanBase`, feed it the instrumented bean as
 *provider*, and export that MBean to JMX (generally by adding a `ManagedResource` annotation).
 
-It's a bit clunky, as it was developed back in the Spring 2.x days, but included here for reference, and maybe it will help someone. 
+It's a bit clunky, as it was developed back in the Spring 2.x days, but included here for reference, and maybe it will help someone.
+
+# HTTP Connection Service
+A wrapper for Apache httpclient.  Hopefully it makes the simple operations easy, while giving sophisticated control over timeouts and other
+important attributes.  Httpclient configuration is not exactly the most intuitive that you might run across... 
