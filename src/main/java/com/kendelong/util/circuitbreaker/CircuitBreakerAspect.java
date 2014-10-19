@@ -5,8 +5,7 @@ import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
+import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -16,6 +15,7 @@ import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
+import com.kendelong.util.monitoring.graphite.GraphiteClient;
 import com.kendelong.util.spring.JmxExportingAspectPostProcessor;
 
 /**
@@ -58,7 +58,7 @@ import com.kendelong.util.spring.JmxExportingAspectPostProcessor;
  */
 @Aspect
 @ManagedResource(description="Circuit Breaker for protecting ourselves against badly behaving remote services")
-public class CircuitBreakerAspect implements MethodInterceptor
+public class CircuitBreakerAspect
 {	
 	private final AtomicReference<ICircuitBreakerState> state = new AtomicReference<ICircuitBreakerState>();
 	private final int DEFAULT_FAILURE_THRESHOLD = 3;
@@ -69,6 +69,10 @@ public class CircuitBreakerAspect implements MethodInterceptor
 	private final AtomicReference<Date> timeOfLastTrip = new AtomicReference<Date>();
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	private GraphiteClient graphiteClient;
+	
+	private final ThreadLocal<String> keys = new ThreadLocal<String>();
 	
 	public CircuitBreakerAspect()
 	{
@@ -87,6 +91,13 @@ public class CircuitBreakerAspect implements MethodInterceptor
 	@Around("@annotation(com.kendelong.util.circuitbreaker.CircuitBreakable)")
 	public Object applyCircuitBreaker(ProceedingJoinPoint pjp) throws Throwable
 	{
+		if(graphiteClient != null)
+		{
+			String methodKey = "circuitbreaker." + getMethodKey(pjp);
+			keys.set(methodKey);
+			graphiteClient.increment(methodKey + ".accesses");
+		}
+
 		Object result = null;
 		try
 		{
@@ -99,36 +110,21 @@ public class CircuitBreakerAspect implements MethodInterceptor
 			getState().onError(this, t);
 			throw t;
 		}
+		finally
+		{
+			keys.remove();
+		}
 		return result;
 	}
 
-	/* This is for use with Spring's regular AOP, so we can do JMX exporting.  We could try to consolidate it with the
-	 * above AspectJ method, by writing a "closure" that we'd pass to the template method.  But it's a lot of 
-	 * trouble and indirection.  So it's back to copy and paste...
-	 * 
-	 * There's no unit tests for this; we rely on the unit tests for the AspectJ method.
-	 * 
-	 * @see org.aopalliance.intercept.MethodInterceptor#invoke(org.aopalliance.intercept.MethodInvocation)
-	 */
-	public Object invoke(MethodInvocation invocation) throws Throwable
+	private String getMethodKey(ProceedingJoinPoint pjp)
 	{
-		Object result = null;
-		try
-		{
-			getState().preInvoke(this);
-			result = invocation.proceed();
-			getState().postInvoke(this);
-		}
-		catch(Throwable t)
-		{
-			getState().onError(this, t);
-			throw t;
-		}
-		return result;
+		String classKey = StringUtils.substringAfterLast(pjp.getSignature().getDeclaringTypeName(), ".");
+		String methodName = pjp.getSignature().getName();
+		String methodKey = classKey + "." + methodName;
+		return methodKey;
 	}
 
-
-	
 	private ICircuitBreakerState getState()
 	{
 		return state.get();
@@ -154,6 +150,7 @@ public class CircuitBreakerAspect implements MethodInterceptor
 		timeOfLastTrip.set(new Date());
 		logger.warn("Circuit breaker tripped; going to OpenState");
 		totalNumberOfTrips.incrementAndGet();
+		if(graphiteClient != null) graphiteClient.increment(keys.get() + ".trips");
 	}
 
 	@ManagedAttribute()
@@ -183,6 +180,7 @@ public class CircuitBreakerAspect implements MethodInterceptor
 		CLOSED_STATE.resetFailureCount();
 		state.set(CLOSED_STATE);
 		logger.info("Circuit breaker reset; all is happy again");
+		if(graphiteClient != null) graphiteClient.increment(keys.get() + ".resets");
 	}
 	
 	@ManagedAttribute(description="Number of current failures in the closed state")
@@ -247,6 +245,16 @@ public class CircuitBreakerAspect implements MethodInterceptor
 		{
 			return -1;
 		}
+	}
+
+	public GraphiteClient getGraphiteClient()
+	{
+		return graphiteClient;
+	}
+
+	public void setGraphiteClient(GraphiteClient graphiteClient)
+	{
+		this.graphiteClient = graphiteClient;
 	}
 
 }
