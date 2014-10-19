@@ -125,3 +125,17 @@ as well as in your log4j configuration
 With this configuration, if your application writes a ERROR log message to the logs, you will also get a count in the Graphite bucket of
 `prod.website.tomcat.hostname.logs.ERROR`. This is crazy useful for realtime log monitoring; assuming your logs are clean (!) you can watch
 the ERROR graph like a hawk, and also look for things like increased log activity in general (an attack?), DEBUG logs in production, etc.
+
+# JMX Utilities
+
+## Log Configurer
+This is a simple MBean that allows you to get/set log levels through the JMX console. Convenient to turn things on and off at runtime.  Works
+with log4j version 1.
+
+## Statistics Provider
+Kind of legacy code, but perhaps useful. A small framework for instrumenting Spring beans with success/failure/error metrics. The bean to be 
+instrumented should create an internal final instance of `StatisticsProvider` and also implement `IStatisticsProvider`, delegating all methods
+therein to the provider instance. Then you can create an empty subclass of `StatisticsProviderMBeanBase`, feed it the instrumented bean as
+*provider*, and export that MBean to JMX (generally by adding a `ManagedResource` annotation).
+
+It's a bit clunky, as it was developed back in the Spring 2.x days, but included here for reference, and maybe it will help someone. 
