@@ -98,7 +98,7 @@ There is also a log4j (v1) appender that writes the log levels to a graphite buc
 		<property name="graphiteClient" ref="graphiteClient"/>
 	</bean>
 as well as in your log4j configuration
-	<appender name="GRAPHITE" class="com.bc.util.monitoring.GraphiteAppender"/>
+	<appender name="GRAPHITE" class="com.kendelong.util.monitoring.graphite.GraphiteAppender"/>
 	<root>
 		...
 		<appender-ref ref="GRAPHITE"/>
