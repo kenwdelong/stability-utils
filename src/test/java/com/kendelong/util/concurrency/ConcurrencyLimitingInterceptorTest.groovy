@@ -7,6 +7,7 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.fail;
 
 import org.aopalliance.intercept.MethodInvocation;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.junit.Test;
 
 import com.kendelong.util.concurrency.ConcurrencyLimitExceededException;
@@ -20,19 +21,20 @@ public class ConcurrencyLimitingInterceptorTest
 	{
 		ConcurrencyLimitingAspect interceptor = new ConcurrencyLimitingAspect();
 		interceptor.setThreadLimit(0);
-		interceptor.invoke(null);
+		def pjp = {} as ProceedingJoinPoint
+		interceptor.applyConcurrencyThrottle(pjp);
 		fail("It should have blown up");
 	}
 	
 	@Test
 	public void testFiniteLimitAllowsCall() throws Throwable
 	{
-		MethodInvocation mi = createMock(MethodInvocation.class);
+		ProceedingJoinPoint mi = createMock(ProceedingJoinPoint.class);
 		expect(mi.proceed()).andReturn(null);
 		replay(mi);
 		
 		ConcurrencyLimitingAspect interceptor = new ConcurrencyLimitingAspect();
-		interceptor.invoke(mi);
+		interceptor.applyConcurrencyThrottle(mi);
 		verify(mi);
 	}
 	

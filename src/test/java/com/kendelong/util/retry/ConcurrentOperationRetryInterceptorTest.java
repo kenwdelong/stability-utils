@@ -36,7 +36,7 @@ public class ConcurrentOperationRetryInterceptorTest
 		{
 		}
 		assertEquals(2, interceptor.getRetriedOperations());
-		assertEquals(3, interceptor.getNumberOfAccesses());
+		assertEquals(1, interceptor.getNumberOfAccesses());
 	}
 	
 	@Test
@@ -67,7 +67,7 @@ public class ConcurrentOperationRetryInterceptorTest
 		{
 		}
 		assertEquals(2, interceptor.getRetriedOperations());
-		assertEquals(3, interceptor.getNumberOfAccesses());
+		assertEquals(1, interceptor.getNumberOfAccesses());
 	}
 	
 

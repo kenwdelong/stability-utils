@@ -91,7 +91,7 @@ public class PerformanceMonitorTest
 		for(int i = 0; i < 10; i++) monitor.addTiming(42);
 		long stopTime = startTime + 1_000_000;
 		monitor.setTime(stopTime);
-		assertEquals(0.00001, monitor.getAccessesPerSecond(), 0.00000001);
+		assertEquals(0.01, monitor.getAccessesPerSecond(), 0.00001);
 	}
 
 }
