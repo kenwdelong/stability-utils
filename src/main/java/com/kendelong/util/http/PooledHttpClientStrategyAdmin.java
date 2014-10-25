@@ -18,7 +18,7 @@ public class PooledHttpClientStrategyAdmin
     @ManagedAttribute(description="The number of milliseconds that the client will wait to establish a connection")
 	public int getConnectionTimeout()
 	{
-		return getPooledStrategy().getConnectionTimeout();
+		return getPooledStrategy().getConnectionTimeoutInMs();
 	}
 
     @ManagedAttribute(description="Max connections per host")
@@ -43,7 +43,7 @@ public class PooledHttpClientStrategyAdmin
     @ManagedAttribute
 	public void setConnectionTimeout(int connectionTimeout)
 	{
-		getPooledStrategy().setConnectionTimeout(connectionTimeout);
+		getPooledStrategy().setConnectionTimeoutInMs(connectionTimeout);
 
 	}
 
@@ -64,26 +64,26 @@ public class PooledHttpClientStrategyAdmin
     		"eg., if the server is not sending data")
 	public int getSocketTimeout()
 	{
-		return pooledStrategy.getSocketTimeout();
+		return pooledStrategy.getSocketTimeoutInMs();
 	}
 
     @ManagedAttribute
 	public void setSocketTimeout(int socketTimeout)
 	{
-		pooledStrategy.setSocketTimeout(socketTimeout);
+		pooledStrategy.setSocketTimeoutInMs(socketTimeout);
 	}
     
     @ManagedAttribute(description="The number of milliseconds that a client will wait to obtain a connection from " +
     		"the connection pool before receiving an exception")
     public long getRetrieveConnectionTimeout()
     {
-    	return pooledStrategy.getRetrieveConnectionTimeout();
+    	return pooledStrategy.getRetrieveConnectionTimeoutInMs();
     }
     
     @ManagedAttribute
     public void setRetrieveConnectionTimeout(int val)
     {
-    	pooledStrategy.setRetrieveConnectionTimeout(val);
+    	pooledStrategy.setRetrieveConnectionTimeoutInMs(val);
     }
 
     
@@ -130,13 +130,13 @@ public class PooledHttpClientStrategyAdmin
     @ManagedAttribute(description="timeout value used for scheduled cleansing of unused connections (measured in seconds)")
     public int getIdleConnectionTimeout()
     {
-    	return pooledStrategy.getIdleConnectionTimeout();
+    	return pooledStrategy.getIdleConnectionTimeoutInSeconds();
     }
     
     @ManagedAttribute
     public void setIdleConnectionTimeout(int val)
     {
-    	pooledStrategy.setIdleConnectionTimeout(val);
+    	pooledStrategy.setIdleConnectionTimeoutInSeconds(val);
     }
     
 }

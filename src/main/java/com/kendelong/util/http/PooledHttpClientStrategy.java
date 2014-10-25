@@ -38,19 +38,19 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 	private volatile int maxConnectionsPerHost = 6;
 	private volatile int maxTotalConnections = 30;
 	// Connection timeout is how long the client will wait for a connection to be created
-	private volatile int connectionTimeout = 5000;
+	private volatile int connectionTimeoutInMs = 5000;
 	// Socket timeout is how long the socket can be idle before the client aborts
-	private volatile int socketTimeout = 5000;
+	private volatile int socketTimeoutInMs = 5000;
 	private volatile boolean ignoreCookies = false;
 	
 	// retrieveConnectionTimeout is how long in ms the client will wait for the connection manager to deliver a connection
-	private volatile int retrieveConnectionTimeout = 500;
+	private volatile int retrieveConnectionTimeoutInMs = 500;
 	
 	private volatile boolean staleConnectionCheck = true;	
 	// enables a scheduled cleaning sweep of our connections
     private volatile boolean connectionCleaningEnabled = true;
     // timeout value used for scheduled cleansing of unused connections (measured in seconds)
-    private volatile int idleConnectionTimeout = 30;
+    private volatile int idleConnectionTimeoutInSeconds = 30;
     
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
@@ -63,12 +63,13 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 		// http://www.baeldung.com/httpclient-timeout
 		
 		RequestConfig config = RequestConfig.custom()
-				.setConnectTimeout(connectionTimeout)
-				.setConnectionRequestTimeout(retrieveConnectionTimeout)
-				.setSocketTimeout(socketTimeout)
+				.setConnectTimeout(connectionTimeoutInMs)
+				.setConnectionRequestTimeout(retrieveConnectionTimeoutInMs)
+				.setSocketTimeout(socketTimeoutInMs)
 				.build();
 		CloseableHttpClient client = HttpClientBuilder.create()
 				.setDefaultRequestConfig(config)
+				.setConnectionManager(getConnectionManager())
 				.build();
 		return client;
 		
@@ -104,8 +105,8 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
         cm.setDefaultConnectionConfig(connectionConfig);
         SocketConfig socketConfig = SocketConfig.custom()
                 .setTcpNoDelay(true)
-                .setSoTimeout(socketTimeout)
-                .setSoLinger(socketTimeout + 500)
+                .setSoTimeout(socketTimeoutInMs)
+                .setSoLinger(socketTimeoutInMs + 500)
                 .build();
         cm.setDefaultSocketConfig(socketConfig);
         setConnectionManager(cm);
@@ -139,7 +140,7 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 		{
 			logger.trace("cleaning http connections");
 			this.connectionManager.get().closeExpiredConnections();
-			this.connectionManager.get().closeIdleConnections(getIdleConnectionTimeout(), TimeUnit.SECONDS);
+			this.connectionManager.get().closeIdleConnections(getIdleConnectionTimeoutInSeconds(), TimeUnit.SECONDS);
 		}
 	}
 	
@@ -194,24 +195,24 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 		this.maxTotalConnections = maxTotalConnections;
 	}
 
-	public int getConnectionTimeout()
+	public int getConnectionTimeoutInMs()
 	{
-		return connectionTimeout;
+		return connectionTimeoutInMs;
 	}
 
-	public void setConnectionTimeout(int connectionTimeout)
+	public void setConnectionTimeoutInMs(int connectionTimeout)
 	{
-		this.connectionTimeout = connectionTimeout;
+		this.connectionTimeoutInMs = connectionTimeout;
 	}
 
-	public int getSocketTimeout()
+	public int getSocketTimeoutInMs()
 	{
-		return socketTimeout;
+		return socketTimeoutInMs;
 	}
 
-	public void setSocketTimeout(int socketTimeout)
+	public void setSocketTimeoutInMs(int socketTimeout)
 	{
-		this.socketTimeout = socketTimeout;
+		this.socketTimeoutInMs = socketTimeout;
 	}
 
 	public boolean isIgnoreCookies()
@@ -224,14 +225,14 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 		this.ignoreCookies = ignoreCookies;
 	}
 
-	public int getRetrieveConnectionTimeout()
+	public int getRetrieveConnectionTimeoutInMs()
 	{
-		return retrieveConnectionTimeout;
+		return retrieveConnectionTimeoutInMs;
 	}
 
-	public void setRetrieveConnectionTimeout(int retrieveConnectionTimeout)
+	public void setRetrieveConnectionTimeoutInMs(int retrieveConnectionTimeout)
 	{
-		this.retrieveConnectionTimeout = retrieveConnectionTimeout;
+		this.retrieveConnectionTimeoutInMs = retrieveConnectionTimeout;
 	}
 
 	public boolean isStaleConnectionCheck()
@@ -254,14 +255,14 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 		this.connectionCleaningEnabled = connectionCleaningEnabled;
 	}
 
-	public int getIdleConnectionTimeout()
+	public int getIdleConnectionTimeoutInSeconds()
 	{
-		return idleConnectionTimeout;
+		return idleConnectionTimeoutInSeconds;
 	}
 
-	public void setIdleConnectionTimeout(int idleConnectionTimeout)
+	public void setIdleConnectionTimeoutInSeconds(int idleConnectionTimeout)
 	{
-		this.idleConnectionTimeout = idleConnectionTimeout;
+		this.idleConnectionTimeoutInSeconds = idleConnectionTimeout;
 	}
 
 	public boolean isAllowAllSsl()
