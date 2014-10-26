@@ -132,6 +132,11 @@ the ERROR graph like a hawk, and also look for things like increased log activit
 This is a simple MBean that allows you to get/set log levels through the JMX console. Convenient to turn things on and off at runtime.  Works
 with log4j version 1.
 
+Just instantiate it:
+
+	<bean class="com.kendelong.util.jmx.LogConfigurer"/>
+
+
 ## Statistics Provider
 Kind of legacy code, but perhaps useful. A small framework for instrumenting Spring beans with success/failure/error metrics. The bean to be 
 instrumented should create an internal final instance of `StatisticsProvider` and also implement `IStatisticsProvider`, delegating all methods
