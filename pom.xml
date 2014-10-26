@@ -63,10 +63,11 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+			<version>2.6.8</version>
 		</dependency>
+		
 		
 		<!-- HTTP stuff -->
 		<!-- Putting the versions here explicitly because they are not always in sync -->
@@ -86,6 +87,8 @@
 			<version>4.3.2</version>
 		</dependency>		
 		
+		<!-- ==================== LOGGING ======================= -->
+		
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -97,6 +100,14 @@
 			<version>1.7.7</version>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+		
+		<!-- ====================== TEST ========================= -->
 
 		<dependency>
 			<groupId>junit</groupId>

@@ -145,4 +145,44 @@ A wrapper for Apache httpclient.  Hopefully it makes the simple operations easy,
 important attributes.  Httpclient configuration is not exactly the most intuitive that you might run across... 
 
 This code was originally written for httpclient 3.1, then ported to 4.1.  Now it's upgraded for 4.3.  The APIs are quite different in these
-versions.  This latest work has not yet been battle-tested.  Beware!
+versions.  This latest work has not yet been battle-tested. I've tested what I could (socket timeout, retrieveConnectionTimeout) on my dev laptop.
+
+## Configuration
+
+You need to instantiate the service and the connection pool manager:
+
+	<bean class="com.kendelong.util.http.HttpConnectionService">
+		<property name="httpClientStrategy" ref="pooledHttpStrategy"/>
+	</bean>
+	
+	<bean id="pooledHttpStrategy" class="com.kendelong.util.http.PooledHttpClientStrategy">
+		<property name="connectionTimeoutInMs" value="1"/>
+		<property name="socketTimeoutInMs" value="6000"/>
+		<property name="retrieveConnectionTimeoutInMs" value="1000"/>
+		<property name="maxConnectionsPerHost" value="2"/>
+		<property name="maxTotalConnections" value="2"/>
+	</bean>
+
+If you want just a single-threaded, single-connection source (just for testing) use the SimpleHttpClientStrategy instead of the Pooled one.
+
+# EhCache Util
+
+There are a couple of classes for helping with EhCache.  
+
+First the EhcacheJmxBootstrapper registers the EhCache caches with JMX. The 
+`ManagementService` provided with EhCache needs the `CacheManager`, but when the `CacheManager` is instantiated and managed by Hibernate,
+I don't see how to get the reference to it for the `ManagementService` constructor.  So this bean runs as a Spring bean with a `@PostConstruct`
+method that registers all the caches.
+
+The other class is `EhcacheExaminer`, which is another MBean that provides visibility into the contents of the EhCaches. Under dire 
+circumstances you may need to delve into the internals of the caches.
+
+## Configuration
+
+Just create the beans:
+
+	<context:mbean-server/>    
+	<bean class="com.kendelong.util.ehcache.EhcacheJmxBootstrapper" autowire="byType"/>
+	<bean class="com.kendelong.util.ehcache.EhCacheExaminer"/>
+
+You can customize what gets exported from the bootstrapper by setting the boolean properties on the bean (not shown here). 

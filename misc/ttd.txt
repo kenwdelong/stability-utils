@@ -1,3 +1,0 @@
-- test new HttpConnectionService, timeouts etc.
-- EhCacheExaminer
-- EhCacheMbeanExporter
