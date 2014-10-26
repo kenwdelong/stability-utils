@@ -1,7 +1,8 @@
 Stability Utilities
 ===================
 This is a set of utility classes and libraries that help with making servers operate safely under high load.  Most of these ideas come from 
-Michael Nygard's book _Release It_, although a couple are my own invention.
+Michael Nygard's book _Release It_, although a couple are my own invention. They are meant for Spring application running on the JVM (Java,
+Groovy, etc).
 
 All of these interceptors expose their state to JMX. This exposes the internal operations of the application to the outside world, which
 means it can be inspected and monitored.  This is a good thing.
@@ -182,6 +183,8 @@ method that registers all the caches.
 
 The other class is `EhcacheExaminer`, which is another MBean that provides visibility into the contents of the EhCaches. Under dire 
 circumstances you may need to delve into the internals of the caches.
+
+EhCache registers the MBeans under net.sf.ehcache in JMX.  That is also where the `EhcacheExaminer` bean is.
 
 ## Configuration
 
