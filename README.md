@@ -136,6 +136,7 @@ Just instantiate it:
 
 	<bean class="com.kendelong.util.jmx.LogConfigurer"/>
 
+The MBean name is *logging:service=logger*.
 
 ## Statistics Provider
 Kind of legacy code, but perhaps useful. A small framework for instrumenting Spring beans with success/failure/error metrics. The bean to be 
