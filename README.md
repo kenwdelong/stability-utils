@@ -165,11 +165,11 @@ You need to instantiate the service and the connection pool manager:
 
 If you want just a single-threaded, single-connection source (just for testing) use the SimpleHttpClientStrategy instead of the Pooled one.
 
-# EhCache Util
+# EhCache Utilities
 
 There are a couple of classes for helping with EhCache.  
 
-First the EhcacheJmxBootstrapper registers the EhCache caches with JMX. The 
+First the `EhcacheJmxBootstrapper` registers the EhCache caches with JMX. The 
 `ManagementService` provided with EhCache needs the `CacheManager`, but when the `CacheManager` is instantiated and managed by Hibernate,
 I don't see how to get the reference to it for the `ManagementService` constructor.  So this bean runs as a Spring bean with a `@PostConstruct`
 method that registers all the caches.
