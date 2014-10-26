@@ -183,6 +183,6 @@ Just create the beans:
 
 	<context:mbean-server/>    
 	<bean class="com.kendelong.util.ehcache.EhcacheJmxBootstrapper" autowire="byType"/>
-	<bean class="com.kendelong.util.ehcache.EhCacheExaminer"/>
+	<bean class="com.kendelong.util.ehcache.EhcacheExaminer"/>
 
 You can customize what gets exported from the bootstrapper by setting the boolean properties on the bean (not shown here). 
