@@ -15,7 +15,7 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 
 @ManagedResource(objectName="net.sf.ehcache:name=CacheContentsExaminer",
 				description="Looking inside the EhCaches")
-public class EhCacheExaminer 
+public class EhcacheExaminer 
 {
 	@ManagedOperation(description="Show the keys for the items in the given cache")
 	@ManagedOperationParameters
