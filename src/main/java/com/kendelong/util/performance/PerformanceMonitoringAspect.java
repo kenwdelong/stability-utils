@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
+import com.kendelong.util.monitoring.graphite.GraphiteClient;
+import com.kendelong.util.monitoring.webservice.ExternalNameElementComputer;
+
 /**
  * This interceptor will log all calls to the proxied bean, and record max, min, and average response times, call rates,
  * and number of exceptions at both the class and method level.  By default it proxies every bean whose name ends with
@@ -21,7 +24,7 @@ import org.springframework.jmx.export.annotation.ManagedResource;
  * an id; if not, the auto-assigned id's in the different ApplicationContexts will conflict.
  * 
  * Export the bean to JMX (no point in monitoring response times if you can't see the results!) using the 
- * com.kendelong.util.performance.WebPerformanceMonitoringAspect
+ * com.kendelong.util.spring.JmxExportingAspectPostProcessor
  * 
  * <pre>
  * {@code
@@ -53,6 +56,10 @@ public class PerformanceMonitoringAspect
 
 	private final Map<String, PerformanceMonitor> monitors = new ConcurrentHashMap<>();
 	
+	private final ExternalNameElementComputer nameElementComputer = new ExternalNameElementComputer();
+	
+	private GraphiteClient graphiteClient;
+	
 	@Around("bean(*Service) or bean(*Controller) or @within(com.kendelong.util.performance.MonitorPerformance)")
 	public Object monitorInvocation(ProceedingJoinPoint pjp) throws Throwable
 	{
@@ -63,8 +70,18 @@ public class PerformanceMonitoringAspect
 		PerformanceMonitor methodMonitor = getMonitor(methodKey);
 		Object value;
 		long startTime = System.currentTimeMillis();
+		String graphitePrefix = null;
 		try
 		{
+			if(graphiteClient != null)
+			{
+				String nameElement = nameElementComputer.computeExternalNameElement(pjp.getTarget().getClass());
+				graphitePrefix = "performance.";
+				if(nameElement != null) graphitePrefix = "webservice." + nameElement + ".";
+				graphiteClient.increment(graphitePrefix + classKey + ".accesses"); 
+				graphiteClient.increment(graphitePrefix + methodKey + ".accesses"); 
+			}
+
 			value = pjp.proceed();
 			
 			long stopTime = System.currentTimeMillis();
@@ -72,6 +89,11 @@ public class PerformanceMonitoringAspect
 			classMonitor.addTiming(duration);
 			methodMonitor.addTiming(duration);
 			logger.debug("Performance monitor [" + methodKey + "] finished in [" + duration + "] ms");
+			if(graphiteClient != null)
+			{
+				graphiteClient.time(graphitePrefix + classKey, duration);
+				graphiteClient.time(graphitePrefix + methodKey, duration);
+			}
 			
 			return value;
 		}
@@ -79,6 +101,11 @@ public class PerformanceMonitoringAspect
 		{
 			classMonitor.addException();
 			methodMonitor.addException();
+			if(graphiteClient != null)
+			{
+				graphiteClient.increment(graphitePrefix + classKey + ".error");
+				graphiteClient.increment(graphitePrefix + methodKey + ".error");
+			}			
 			throw t;
 		}
 	}
@@ -100,5 +127,15 @@ public class PerformanceMonitoringAspect
 	{
 		ReportFormatter formatter = new ReportFormatter();
 		return formatter.formatReport(monitors);
+	}
+
+	public GraphiteClient getGraphiteClient()
+	{
+		return graphiteClient;
+	}
+
+	public void setGraphiteClient(GraphiteClient graphiteClient)
+	{
+		this.graphiteClient = graphiteClient;
 	}
 }

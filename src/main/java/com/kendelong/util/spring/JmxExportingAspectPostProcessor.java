@@ -15,6 +15,8 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.jmx.export.MBeanExportException;
 import org.springframework.jmx.export.MBeanExporter;
 
+import com.kendelong.util.monitoring.webservice.ExternalNameElementComputer;
+
 /**
  * This bean can export AspectJ-style aspects to JMX when registered.  For example:
  * 
@@ -51,6 +53,8 @@ public class JmxExportingAspectPostProcessor implements BeanPostProcessor
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
+	private final ExternalNameElementComputer nameElementComputer = new ExternalNameElementComputer();
+	
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException
 	{
 		boolean advised = bean instanceof Advised;
@@ -69,7 +73,7 @@ public class JmxExportingAspectPostProcessor implements BeanPostProcessor
 					if(serviceType != null)
 					{
 						ObjectName oname;
-						String onameString = jmxDomain + ":service=" + serviceType + ",bean=" + beanName;
+						String onameString = getDomain(bean) + "." + serviceType + ":bean=" + beanName;
 						try
 						{
 							/* as long as the aspect is marked prototype, each advised bean
@@ -90,6 +94,15 @@ public class JmxExportingAspectPostProcessor implements BeanPostProcessor
 			}
 		}
 		return bean;
+	}
+	
+	private String getDomain(Object bean)
+	{
+		String webserviceNameElement = nameElementComputer.computeExternalNameElement(bean.getClass());
+		if(webserviceNameElement == null)
+			return jmxDomain;
+		else
+			return jmxDomain + "." + webserviceNameElement;
 	}
 
 
