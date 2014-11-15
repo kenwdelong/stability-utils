@@ -39,6 +39,19 @@ This will export each monitor to the JMX OName of *app.mystuff:service=performan
 
 The configuration is the same for the other beans described below.
 
+# WebServices
+
+Have you ever implemented a controller that serves as a web service endpoint for an external client, or written client code that calls
+out to an external web service (maybe through http-client), and then forgotten about them?  Or years later, your boss asks for a list of all
+the external dependencies to the app, and you have to comb through the code looking for suspects?  Then these annotations are for you.
+
+`@WebServiceEndpoint` - drop this annotation on any controller that that is picked up by the performance monitor, and when it registers the
+controller in JMX or sends data to Graphite, it will add "webservice.endpoint" to the JMX OName and the Graphite bin.  In this way, all your endpoints
+"register" with both systems, so that when the boss asks for the list, you just run to the JMX Console https://github.com/kenwdelong/jmx-console
+and get the list.
+
+`@WebServiceClient` - add this annotation on any class that calls out to external web services, for a similar effect to the `@WebServiceEndpoint` annotation. 
+
 # Circuit Breakers
 
 This component protects downstream services from traffic when under duress.  If there are a certain number (*failureThreshold*) of errors in a row (default 3), the 

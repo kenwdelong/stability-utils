@@ -102,7 +102,7 @@ public class JmxExportingAspectPostProcessor implements BeanPostProcessor
 		if(webserviceNameElement == null)
 			return jmxDomain;
 		else
-			return jmxDomain + "." + webserviceNameElement;
+			return jmxDomain + ".webservice." + webserviceNameElement;
 	}
 
 
