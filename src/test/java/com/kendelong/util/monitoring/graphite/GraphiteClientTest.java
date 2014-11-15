@@ -1,5 +1,7 @@
 package com.kendelong.util.monitoring.graphite;
 
+import java.util.Random;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -12,17 +14,21 @@ public class GraphiteClientTest
 	{
 		GraphiteClient gc = new GraphiteClient();
 		gc.setAppName("gc");
-		gc.setStatsdHost("localhost");
+		gc.setStatsdHost("127.0.01");
 		gc.setStatsdPort(8125);
 		gc.setServerEnv("test");
 		gc.init();
 		
 		System.out.println("Starting...");
 		
-		for(int i = 0; i < 100; i++)
+		Random random = new Random();
+		for(int i = 0; i < 10000; i++)
 		{
-			gc.increment("theTester");
+			gc.increment("theTesterIncrement");
+			gc.count("theTesterCount", 1);
+			gc.time("theTesterTime", (long) (300*(1 + random.nextDouble() - 0.5)));
 			Thread.sleep(100);
+			if(i%100 == 0) System.out.println("Count: " + i);
 		}
 		
 		System.out.println("Done");
