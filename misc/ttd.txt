@@ -1,0 +1,16 @@
+
+
+
+
+
+
+-- Articles on publishing to Maven Central
+
+http://datumedge.blogspot.com/2012/05/publishing-from-github-to-maven-central.html
+
+https://issues.sonatype.org/browse/OSSRH-12332
+
+http://blog.sonatype.com/2010/01/how-to-generate-pgp-signatures-with-maven/#.VGGQKfnF98E
+
+http://blog.sonatype.com/2009/09/maven-tips-and-tricks-using-github/#.VGWHifnF98E
+
