@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.kenwdelong</groupId>
 	<artifactId>stability-utils</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 
 	<properties>
 		<spring.version>4.0.6.RELEASE</spring.version>
@@ -182,7 +182,7 @@
 
 	<scm>
 		<connection>scm:git:git@github.com:kenwdelong/stability-utils.git</connection>
-	  <tag>stability-utils-1.0.0</tag>
+	  <tag>HEAD</tag>
   </scm>
 
 	<profiles>
