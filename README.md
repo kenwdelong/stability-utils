@@ -179,6 +179,8 @@ important attributes.  Httpclient configuration is not exactly the most intuitiv
 This code was originally written for httpclient 3.1, then ported to 4.1.  Now it's upgraded for 4.3.  The APIs are quite different in these
 versions.  This latest work has not yet been battle-tested. I've tested what I could (socket timeout, retrieveConnectionTimeout) on my dev laptop.
 
+There is an MBean you can export `PooledHttpClientStrategyAdmin` that will allow you to change the timeout settings at runtime.
+
 ## Configuration
 
 You need to instantiate the service and the connection pool manager:
