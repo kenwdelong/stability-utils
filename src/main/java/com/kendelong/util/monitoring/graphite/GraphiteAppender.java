@@ -16,9 +16,13 @@ import org.apache.log4j.spi.LoggingEvent;
  * of any other way to get the reference to the GraphiteClient.
  * 
  * Configuration in application context is like this:
+ * <pre>
+   {@code
 	<bean class="com.kendelong.util.monitoring.graphite.GraphiteAppender">
 		<property name="graphiteClient" ref="graphiteClient"/>
 	</bean>
+   }
+   </pre>
  * 
  * @author kdelong
  *

@@ -41,14 +41,16 @@ public interface IHttpConnectionService
 	 * @param connectionURL is the HTTP URL to connect to.
 	 * @param parameters data used to form the query string
 	 * @return the response
+	 * @throws Exception currently logs a warn on an exception and throws it back to the client 
 	 */
 	public HttpResponseObject postData(String connectionURL, Map<String, String> parameters) throws Exception;
 	
 	/**
 	 * Does an HTTP GET and returns the result
-	 * @param connectionUrl
+	 * @param connectionUrl The URL to POST the data to
 	 * @param parameters data used to form the query string
 	 * @return the response body
+	 * @throws Exception currently logs a warn on an exception and throws it back to the client 
 	 */
 	public HttpResponseObject getResult(String connectionUrl, Map<String, String> parameters) throws Exception;
 

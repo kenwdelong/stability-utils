@@ -142,7 +142,7 @@ public class StatisticsProvider implements IStatisticsProvider
 	 * 
 	 * Synchronized to be sure the creation of the atomics are done correctly.  They should
 	 * add a "GetOrCreate" atomic method to the map impl.
-	 * @param errorName
+	 * @param errorName The name of the error
 	 */
 	public synchronized void addError(String errorName)
 	{

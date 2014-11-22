@@ -126,8 +126,12 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 	/**
 	 * Clean the connections.  For this method to be invoked, the Spring context needs a couple of beans:
 	 * 
-	 * 	<task:scheduler id="threadPoolTaskScheduler" pool-size="1" />
-	 *  <task:annotation-driven scheduler="threadPoolTaskScheduler" />
+     * <pre>
+       {@code
+	   	<task:scheduler id="threadPoolTaskScheduler" pool-size="1" />
+	    <task:annotation-driven scheduler="threadPoolTaskScheduler" />
+        }
+       </pre>
 	 *  
 	 *  This will activate the timer that actually calls this method.
 	 *  
