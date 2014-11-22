@@ -7,6 +7,18 @@ Groovy, etc).
 All of these interceptors expose their state to JMX. This exposes the internal operations of the application to the outside world, which
 means it can be inspected and monitored.  This is a good thing.
 
+This artifact is available on Maven Central.
+
+	<dependency>
+	    <groupId>com.github.kenwdelong</groupId>
+	    <artifactId>stability-utils</artifactId>
+	    <version>1.0.0</version>
+	</dependency>
+
+## Releases
+- 1.0.0: Java 7, Groovy 2.1, Spring 4.0
+- 1.1.0: Java 8, Groovy 2.3, Spring 4.1
+
 # Performance Monitoring
 Package **com.kendelong.util.performance**.  This is a simple Spring interceptor which wraps the joinpoints specified by the pointcuts in
  _PerformanceMonitoringAspect_ 
