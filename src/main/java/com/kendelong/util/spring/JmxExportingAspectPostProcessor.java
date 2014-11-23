@@ -110,13 +110,16 @@ public class JmxExportingAspectPostProcessor implements BeanPostProcessor
 	{
 		try
 		{
+			// For some reason, we some objects (notably controllers) get registered 2-3 times. Subsequent registrations throw exceptions.
+			// unregisterManagedResource() is very tolerant and won't blow up if the object isn't registered.
+			// With this "last one wins" strategy, your dev environment stays clean when JRebel reloads the web context.
+			mbeanExporter.unregisterManagedResource(oname);
 			mbeanExporter.registerManagedResource(target, oname);
 			logger.info("Exported " + beanName + " to JMX as " + oname.toString());
 		}
 		catch(MBeanExportException e)
 		{
-			// TODO if InstanceAlreadyExistsException retry; is it the cause?
-			logger.warn("Error registering MBean [" + oname + "]");
+			logger.warn("Error registering MBean [" + oname + "]; cause: [" + e.getCause() + "]");
 		}
 	}
 
