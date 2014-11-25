@@ -32,7 +32,9 @@ import com.kendelong.util.monitoring.graphite.GraphiteClient;
  * Configuration is like
  * <pre>
  * {@code
-	<bean class="com.kendelong.util.circuitbreaker.CircuitBreakerAspect" scope="prototype"/>
+	<bean class="com.kendelong.util.circuitbreaker.CircuitBreakerAspect" scope="prototype">
+		<property name="graphiteClient" ref="graphiteClient"/>
+	</bean>
 			
 	<bean id="aspectJmxExporter" class="com.kendelong.util.spring.JmxExportingAspectPostProcessor" lazy-init="false">
 		<property name="mbeanExporter" ref="mbeanExporter"/>

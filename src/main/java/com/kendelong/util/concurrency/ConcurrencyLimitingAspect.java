@@ -18,7 +18,9 @@ import com.kendelong.util.monitoring.graphite.GraphiteClient;
  * 
  * <pre>
  * {@code
-	<bean class="com.kendelong.util.concurrency.ConcurrencyLimitingAspect" scope="prototype"/>
+	<bean class="com.kendelong.util.concurrency.ConcurrencyLimitingAspect" scope="prototype">
+		<property name="graphiteClient" ref="graphiteClient"/>
+	</bean>
 			
 	<bean class="com.kendelong.util.spring.JmxExportingAspectPostProcessor" lazy-init="false">
 		<property name="mbeanExporter" ref="mbeanExporter"/>

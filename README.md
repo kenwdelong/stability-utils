@@ -32,7 +32,9 @@ By default, it wraps and exports any beans with names like `*Controller` or `*Se
 
 You need to configure the bean in the Spring context as a prototype:
 
-	<bean class="com.kendelong.util.performance.PerformanceMonitoringAspect" scope="prototype"/>
+	<bean class="com.kendelong.util.performance.PerformanceMonitoringAspect" scope="prototype">
+		<property name="graphiteClient" ref="graphiteClient"/>
+	</bean>
 
 Then, in order to see the data (no use collecting data if you can't see it!), export the bean to JMX:
 

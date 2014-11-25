@@ -34,6 +34,7 @@ import com.kendelong.util.monitoring.graphite.GraphiteClient;
 				<value>java.lang.IllegalArgumentException</value>
 			</list>
 		</property>
+		<property name="graphiteClient" ref="graphiteClient"/>
 	</bean>
 		
 	<bean class="com.kendelong.util.spring.JmxExportingAspectPostProcessor" lazy-init="false">

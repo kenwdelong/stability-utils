@@ -28,7 +28,9 @@ import com.kendelong.util.monitoring.webservice.ExternalNameElementComputer;
  * 
  * <pre>
  * {@code
-	<bean id="servicePerformanceMonitor" class="com.kendelong.util.performance.PerformanceMonitoringAspect" scope="prototype"/>	
+	<bean id="servicePerformanceMonitor" class="com.kendelong.util.performance.PerformanceMonitoringAspect" scope="prototype">
+		<property name="graphiteClient" ref="graphiteClient"/>
+	</bean>
 		
 	<bean id="aspectJmxExporter" class="com.kendelong.util.spring.JmxExportingAspectPostProcessor" lazy-init="false">
 		<property name="mbeanExporter" ref="mbeanExporter"/>
