@@ -62,7 +62,7 @@ public class PerformanceMonitoringAspect
 	
 	private GraphiteClient graphiteClient;
 	
-	@Around("bean(*Service) or bean(*Controller) or @within(com.kendelong.util.performance.MonitorPerformance)")
+	@Around("bean(*Controller) or @within(com.kendelong.util.performance.MonitorPerformance)")
 	public Object monitorInvocation(ProceedingJoinPoint pjp) throws Throwable
 	{
 		String classKey = StringUtils.substringAfterLast(pjp.getSignature().getDeclaringTypeName(), ".");
@@ -90,7 +90,10 @@ public class PerformanceMonitoringAspect
 			long duration = stopTime - startTime;
 			classMonitor.addTiming(duration);
 			methodMonitor.addTiming(duration);
-			logger.debug("Performance monitor [" + methodKey + "] finished in [" + duration + "] ms");
+			if(logger.isTraceEnabled())
+			{
+				logger.trace("Performance monitor [" + methodKey + "] finished in [" + duration + "] ms");
+			}
 			if(graphiteClient != null)
 			{
 				graphiteClient.time(graphitePrefix + classKey, duration);
