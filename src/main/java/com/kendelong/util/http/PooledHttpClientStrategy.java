@@ -11,13 +11,13 @@ import org.apache.http.config.ConnectionConfig;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.config.SocketConfig;
-import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.pool.PoolStats;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -33,7 +33,7 @@ import org.springframework.scheduling.annotation.Scheduled;
  */
 public class PooledHttpClientStrategy implements IHttpClientStrategy,InitializingBean, DisposableBean
 {
-	private final AtomicReference<HttpClientConnectionManager> connectionManager = new AtomicReference<HttpClientConnectionManager>();
+	private final AtomicReference<PoolingHttpClientConnectionManager> connectionManager = new AtomicReference<PoolingHttpClientConnectionManager>();
 	
 	private volatile int maxConnectionsPerHost = 6;
 	private volatile int maxTotalConnections = 30;
@@ -73,7 +73,6 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 				.build();
 		return client;
 		
-		
 //		HttpConnectionParams.setStaleCheckingEnabled(params, isStaleConnectionCheck());
 		
 //		HttpProtocolParams.setUserAgent(params, "Apache httpclient-4.1.3 noc@babycenter.com");
@@ -110,6 +109,7 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
                 .build();
         cm.setDefaultSocketConfig(socketConfig);
         setConnectionManager(cm);
+        
 	}
 
 	/**
@@ -157,14 +157,14 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 	    return sslsf;
 	}
 
-	private HttpClientConnectionManager getConnectionManager()
+	private PoolingHttpClientConnectionManager getConnectionManager()
 	{
 		return connectionManager.get();
 	}
 	
-	private void setConnectionManager(HttpClientConnectionManager newConMgr)
+	private void setConnectionManager(PoolingHttpClientConnectionManager newConMgr)
 	{
-		HttpClientConnectionManager oldConMgr = connectionManager.getAndSet(newConMgr);
+		PoolingHttpClientConnectionManager oldConMgr = connectionManager.getAndSet(newConMgr);
 		if(oldConMgr != null)
 		{
 			oldConMgr.shutdown();
@@ -277,6 +277,11 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 	public void setAllowAllSsl(boolean allowAllSsl)
 	{
 		this.allowAllSsl = allowAllSsl;
+	}
+	
+	public PoolStats getPoolStats()
+	{
+		return getConnectionManager().getTotalStats();
 	}
 
 }

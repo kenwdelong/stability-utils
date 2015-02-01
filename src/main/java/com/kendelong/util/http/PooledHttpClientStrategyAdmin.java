@@ -75,7 +75,7 @@ public class PooledHttpClientStrategyAdmin
     
     @ManagedAttribute(description="The number of milliseconds that a client will wait to obtain a connection from " +
     		"the connection pool before receiving an exception")
-    public long getRetrieveConnectionTimeout()
+    public int getRetrieveConnectionTimeout()
     {
     	return pooledStrategy.getRetrieveConnectionTimeoutInMs();
     }
@@ -100,6 +100,12 @@ public class PooledHttpClientStrategyAdmin
 	{
 		pooledStrategy.setStaleConnectionCheck(staleConnectionCheck);
 	}
+    
+    @ManagedAttribute 
+    public String getPoolStats()
+    {
+    	return pooledStrategy.getPoolStats().toString();
+    }
 
 	public PooledHttpClientStrategy getPooledStrategy()
 	{
