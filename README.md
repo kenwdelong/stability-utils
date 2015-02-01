@@ -16,17 +16,17 @@ This artifact is available on Maven Central.
 	</dependency>
 
 ## Releases
-###1.1.1### 
+### 1.1.1 (Feb 1, 2015)
 - fixed error on re-exporting JMX beans
 - reduced log level for performance monitor to trace
 - removed auto-proxying of beans named `*Service`, use `@MonitorPerformance` annotation
 - fix HttpService JMX bean
 - add exposure of connection pool stats to HttpService JMX bean
 
-###1.1.0###
+### 1.1.0
 - Java 8, Groovy 2.3, Spring 4.1
 
-###1.0.0###
+### 1.0.0
 - Java 7, Groovy 2.1, Spring 4.0
 
 # Performance Monitoring
