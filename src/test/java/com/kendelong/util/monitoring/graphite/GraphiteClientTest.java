@@ -14,7 +14,7 @@ public class GraphiteClientTest
 	{
 		GraphiteClient gc = new GraphiteClient();
 		gc.setAppName("gc");
-		gc.setStatsdHost("127.0.01");
+		gc.setStatsdHost("127.0.0.1");
 		gc.setStatsdPort(8125);
 		gc.setServerEnv("test");
 		gc.init();
