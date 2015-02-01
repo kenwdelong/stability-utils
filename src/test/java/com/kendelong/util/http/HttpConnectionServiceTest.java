@@ -1,16 +1,16 @@
 package com.kendelong.util.http;
 
-import static org.junit.Assert.*;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class HttpConnectionServiceTest
 {
 
 	@Test
+	@Ignore
 	public void testConnectionsAreAvailable() throws Exception
 	{
 //		<bean class="com.kendelong.util.http.HttpConnectionService">
