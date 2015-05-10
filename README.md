@@ -16,6 +16,9 @@ This artifact is available on Maven Central.
 	</dependency>
 
 ## Releases
+### 1.2.0 (May 9, 2015)
+- added support for logback with the LogbackGraphiteAppender bean.
+
 ### 1.1.1 (Feb 1, 2015)
 - fixed error on re-exporting JMX beans
 - reduced log level for performance monitor to trace
@@ -122,7 +125,9 @@ component will be shared across method calls.
 # Graphite Monitoring
 
 Graphite is a real-time charting tool developed at Etsy. It's easy to use and configure. Statsd is a node app that is generally used to front
-Graphite and bucket up some of the calls.
+Graphite and bucket up some of the calls.  This project contains support for Graphite integration with log4j and logback.
+
+## log4j
 
 Add the `GraphiteClient` to your application context. Use it like you would use a logger; at appropriate places in the code type
 
@@ -165,11 +170,14 @@ With this configuration, if your application writes a ERROR log message to the l
 `prod.website.tomcat.hostname.logs.ERROR`. This is crazy useful for realtime log monitoring; assuming your logs are clean (!) you can watch
 the ERROR graph like a hawk, and also look for things like increased log activity in general (an attack?), DEBUG logs in production, etc.
 
+## logback
+Configure exactly the same as above, but use LogbackGraphiteAppender.
+
 # JMX Utilities
 
 ## Log Configurer
 This is a simple MBean that allows you to get/set log levels through the JMX console. Convenient to turn things on and off at runtime.  Works
-with log4j version 1.
+with log4j version 1.  There is no support for logback, because logback has native support for this with the `<jmxConfigurator/>` tag.
 
 Just instantiate it:
 

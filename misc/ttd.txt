@@ -1,8 +1,19 @@
 - Create an appender for Logback
 
 
+== Release instructions
 
+mvn release:prepare
+mvn release:perform
+Log into Sonatype Nexus and find your artifacts under Staging Repositories
+Close, then release the artifacts.
 
+If you need to undo the release, revert the changes with 
+git reset --hard HEAD~2
+and delete the tag with 
+git tag -d redis-launcher-0.1
+followed by 
+git push origin :refs/tags/redis-launcher-0.1.
 
 -- Articles on publishing to Maven Central
 
