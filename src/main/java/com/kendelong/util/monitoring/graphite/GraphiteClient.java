@@ -47,6 +47,7 @@ public class GraphiteClient
 		{
 		    InetAddress addr = InetAddress.getLocalHost();
 		    hostname = addr.getHostName();
+		    hostname = hostname.replaceAll("\\.", "-");
 		} 
 		catch (UnknownHostException e) 
 		{
