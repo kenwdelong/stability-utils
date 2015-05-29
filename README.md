@@ -16,6 +16,9 @@ This artifact is available on Maven Central.
 	</dependency>
 
 ## Releases
+### 1.2.1 (May 28, 2015)
+- alter GraphiteClient to replace dots in the hostname with dashes, so they don't get interpreted as graphite buckets. 
+
 ### 1.2.0 (May 9, 2015)
 - added support for logback with the LogbackGraphiteAppender bean.
 
