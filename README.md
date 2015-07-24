@@ -16,6 +16,9 @@ This artifact is available on Maven Central.
 	</dependency>
 
 ## Releases
+### 1.2.2 (July 23, 2015)
+- alter PooledHttpClientStrategy to reuse the threadsafe HttpClient instance and add stale connection checking 
+
 ### 1.2.1 (May 28, 2015)
 - alter GraphiteClient to replace dots in the hostname with dashes, so they don't get interpreted as graphite buckets. 
 

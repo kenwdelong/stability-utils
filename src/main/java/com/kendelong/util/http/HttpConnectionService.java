@@ -99,7 +99,7 @@ public class HttpConnectionService implements IHttpConnectionService
 	}
 	
 	/**
-	 * Execute the method and pass it to be processed and popuplate an
+	 * Execute the method and pass it to be processed and populate an
 	 * HttpResponseObject with the response data.
 	 * 
 	 * @param httpRequest	Method to be executed

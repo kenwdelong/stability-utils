@@ -1,5 +1,6 @@
 package com.kendelong.util.http;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -34,6 +35,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 public class PooledHttpClientStrategy implements IHttpClientStrategy,InitializingBean, DisposableBean
 {
 	private final AtomicReference<PoolingHttpClientConnectionManager> connectionManager = new AtomicReference<PoolingHttpClientConnectionManager>();
+	private final AtomicReference<CloseableHttpClient> httpClient = new AtomicReference<CloseableHttpClient>();
 	
 	private volatile int maxConnectionsPerHost = 6;
 	private volatile int maxTotalConnections = 30;
@@ -59,30 +61,13 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 	@Override
 	public CloseableHttpClient getHttpClient()
 	{
-		// this ref is better than the official docs
-		// http://www.baeldung.com/httpclient-timeout
-		
-		RequestConfig config = RequestConfig.custom()
-				.setConnectTimeout(connectionTimeoutInMs)
-				.setConnectionRequestTimeout(retrieveConnectionTimeoutInMs)
-				.setSocketTimeout(socketTimeoutInMs)
-				.build();
-		CloseableHttpClient client = HttpClientBuilder.create()
-				.setDefaultRequestConfig(config)
-				.setConnectionManager(getConnectionManager())
-				.build();
-		return client;
-		
-//		HttpConnectionParams.setStaleCheckingEnabled(params, isStaleConnectionCheck());
-		
-//		HttpProtocolParams.setUserAgent(params, "Apache httpclient-4.1.3 noc@babycenter.com");
-
-        // ignore cookies
-        // gzip
+		return httpClient.get();
 	}
 
 	public void reset()
 	{
+		// ************* Create connection manager **********************
+		
 		PoolingHttpClientConnectionManager cm;
 		if(allowAllSsl)
 		{
@@ -109,7 +94,32 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
                 .build();
         cm.setDefaultSocketConfig(socketConfig);
         setConnectionManager(cm);
+
         
+        // **************** Create Client *****************
+        
+        // these are reusable: https://hc.apache.org/httpcomponents-client-4.3.x/tutorial/html/connmgmt.html#d5e380   Section 2.4
+		// this ref is better than the official docs
+		// http://www.baeldung.com/httpclient-timeout
+		
+		RequestConfig config = RequestConfig.custom()
+				.setConnectTimeout(connectionTimeoutInMs)
+				.setConnectionRequestTimeout(retrieveConnectionTimeoutInMs)
+				.setSocketTimeout(socketTimeoutInMs)
+				.setStaleConnectionCheckEnabled(staleConnectionCheck)
+				.build();
+		CloseableHttpClient client = HttpClientBuilder.create()
+				.setDefaultRequestConfig(config)
+				.setConnectionManager(getConnectionManager())
+				.build();
+		
+		httpClient.set(client);
+		
+//		HttpProtocolParams.setUserAgent(params, "Apache httpclient-4.1.3 ops@me.com");
+
+        // ignore cookies
+        // gzip
+
 	}
 
 	/**
@@ -132,6 +142,8 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 	    <task:annotation-driven scheduler="threadPoolTaskScheduler" />
         }
        </pre>
+       Or
+       just put @EnableScheduling on one of the @Config classes
 	 *  
 	 *  This will activate the timer that actually calls this method.
 	 *  
@@ -170,14 +182,6 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 			oldConMgr.shutdown();
 		}
 	}
-
-	@Override
-	public void destroy() throws Exception
-	{
-		getConnectionManager().shutdown();
-	}
-
-
 
 	public int getMaxConnectionsPerHost()
 	{
@@ -284,4 +288,17 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 		return getConnectionManager().getTotalStats();
 	}
 
+	@Override
+	public void destroy()
+	{
+		try
+		{
+			getHttpClient().close();
+		}
+		catch(IOException e)
+		{
+			// seriously?
+			getConnectionManager().close();
+		}
+	}
 }
