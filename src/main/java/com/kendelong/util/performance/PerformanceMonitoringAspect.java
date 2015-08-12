@@ -133,6 +133,12 @@ public class PerformanceMonitoringAspect
 		ReportFormatter formatter = new ReportFormatter();
 		return formatter.formatReport(monitors);
 	}
+	
+	@ManagedAttribute(description="Get map of monitor objects")
+	public Map<String, PerformanceMonitor> getMonitors()
+	{
+		return monitors;
+	}
 
 	public GraphiteClient getGraphiteClient()
 	{

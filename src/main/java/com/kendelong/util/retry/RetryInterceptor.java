@@ -201,6 +201,12 @@ public class RetryInterceptor implements Ordered
 		builder.append("</tbody></table>");
 		return builder.toString();
 	}
+	
+	@ManagedAttribute(description="Get failed methods raw data")
+	public Map<String, AtomicInteger> getFailedMethodsData()
+	{
+		return failedMethods;
+	}
 
 	public GraphiteClient getGraphiteClient()
 	{

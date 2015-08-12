@@ -63,7 +63,9 @@ public class PerformanceMonitor
 
 	public double getMinimumResponseTime()
 	{
-		return minimum.get();
+		long time = minimum.get();
+		if(time == Long.MAX_VALUE) time = 0;
+		return time;
 	}
 	
 	public double getAccessesPerSecond()

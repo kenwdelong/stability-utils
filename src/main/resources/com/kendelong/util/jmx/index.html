@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="StabilityMetrics">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stability Utils Metrics</title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="http://cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
+	<style>
+		tr.bg-info td {
+			background-color: #d9edf7;
+		}
+		tr.parent-shade td {
+			background-color: #C3D5DE;
+		}
+	</style>
+
+  </head>
+  <body>
+	<div class="container" ng-controller="MainCtrl as main">
+	
+		<div class="panel panel-info" ng-repeat="perfData in main.p2">
+		  <!-- Default panel contents -->
+		  <div class="panel-heading"><button type="button" class="btn btn-default" data-toggle="collapse" data-target="#{{perfData.divId}}"  aria-expanded="true" aria-controls="{{perfData.divId}}"><span class="caret"></button> {{perfData.name}}</div>
+		  <div class="panel-body">
+			<p>{{perfData.caption}}</p>
+		  </div>
+		  <div class="collapse in" id="{{perfData.divId}}">
+		  <table class="table table-hover perfTable" id="{{perfData.divId}}Table">
+			<thead>
+			<tr>
+				<th class="hidden">OName</th>
+				<th>Name</th>
+				<th>Minimum</th>
+				<th>Maximum</th>
+				<th>Average</th>
+				<th>Requests/min</th>
+				<th>Exceptions</th>
+				<th>Number of Accesses</th>
+				<th>Cumulative Time</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="service in perfData.data" class="details-control">
+				<td class="hidden">{{ service.oname }}</td>
+				<td>{{ service.name }}</td>
+				<td>{{ service.min }}</td>
+				<td>{{ service.max }}</td>
+				<td>{{ service.avg }}</td>
+				<td>{{ service.rpm }}</td>
+				<td>{{ service.ex }}</td>
+				<td>{{ service.numAccess }}</td>
+				<td>{{ service.cumulative }}</td>
+			</tr>
+			</tbody>
+		  </table>
+		  </div>
+		</div>
+		
+		<div class="panel panel-info">
+		  <div class="panel-heading"><button type="button" class="btn btn-default" data-toggle="collapse" data-target="#circuitBreakerTable"  aria-expanded="true" aria-controls="circuitBreakerTable"><span class="caret"></button> Circuit Breakers</div>
+		  <div class="panel-body">
+			<p>Circuit breakers that protect downstream external systems</p>
+		  </div>
+		  <div id="circuitBreakerTable" class="collapse in">
+		  <table class="table table-hover" id="cbTable">
+			<thead>
+			<tr>
+				<th>Name</th>
+				<th>Current Failure Count</th>
+				<th>Current State</th>
+				<th>Failure Threshold</th>
+				<th>Recovery Timeout</th>
+				<th>Time of Last Trip</th>
+				<th>Time Since Last Trip in Seconds</th>
+				<th>Time to Next Retry in Seconds</th>
+				<th>Total Number Of Trips</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="cb in main.circuitBreakers">
+				<td>{{ cb.name }}</td>
+				<td>{{ cb.failureCount }}</td>
+				<td><button type="button" class="btn btn-{{ cb.stateClass }}">{{ cb.state }}</button></td>
+				<td>{{ cb.threshold }}</td>
+				<td>{{ cb.recovery }}</td>
+				<td>{{ cb.lastTripTime }}</td>
+				<td>{{ cb.timeSinceLastTrip }}</td>
+				<td>{{ cb.timeToNextRetry }}</td>
+				<td><button type="button" class="btn btn-{{ cb.tripsClass }}">{{ cb.totalNumTrips }}</button></td>
+			</tr>
+			</tbody>
+		  </table>
+		  </div>
+		</div>
+
+		<div class="panel panel-info">
+		  <div class="panel-heading"><button type="button" class="btn btn-default" data-toggle="collapse" data-target="#concurrencyThrottleTable"  aria-expanded="true" aria-controls="concurrencyThrottleTable"><span class="caret"></button> Concurrency Throttles</div>
+		  <div class="panel-body">
+			<p>Concurrency throttles that only allow a certain number of threads in a component at a time</p>
+		  </div>
+		  <div id="concurrencyThrottleTable" class="collapse in">
+		  <table class="table table-hover" id="ctTable">
+			<thead>
+			<tr>
+				<th>Name</th>
+				<th>Current Thread Count</th>
+				<th>Thread Limit</th>
+				<th>Trip Count</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="ct in main.concurrencyThrottles">
+				<td>{{ ct.name }}</td>
+				<td>{{ ct.threadCount }}</td>
+				<td>{{ ct.threadLimit }}</td>
+				<td><button type="button" class="btn btn-{{ ct.tripClass }}">{{ ct.tripCount }}</button></td>
+			</tr>
+			</tbody>
+		  </table>
+		  </div>
+		</div>
+		
+		<div class="panel panel-info">
+		  <div class="panel-heading"><button type="button" class="btn btn-default" data-toggle="collapse" data-target="#retryTable"  aria-expanded="true" aria-controls="retryTable"><span class="caret"></button> Retry Interceptors</div>
+		  <div class="panel-body">
+			<p>Operations that failed and were automatically retried</p>
+		  </div>
+		  <div id="retryTable" class="collapse in">
+		  <table class="table table-hover" id="rtTable">
+			<thead>
+			<tr>
+				<th>Name</th>
+				<th>Max Retries</th>
+				<th>Number of Accesses</th>
+				<th>Retried Operations</th>
+				<th>Failed Operations</th>
+				<th>Failed Methods</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr ng-repeat="retry in main.retries">
+				<td>{{ retry.name }}</td>
+				<td>{{ retry.maxRetries }}</td>
+				<td>{{ retry.numAccesses }}</td>
+				<td><button type="button" class="btn btn-{{ retry.retryClass }}">{{ retry.retriedOperations }}</button></td>
+				<td><button type="button" class="btn btn-{{ retry.opsClass }}">{{ retry.failedOperations }}</button></td>
+				<td>
+					<table class="table table-bordered" ng-if="retry.failedMethods.length > 0">
+						<tr><th>Name</th><th>Failures</th></tr>
+						<tr ng-repeat="method in retry.failedMethods">
+							<td>{{ method.name }}</td>
+							<td>{{ method.failures }}</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			</tbody>
+		  </table>
+		  </div>
+		</div>
+
+	</div>
+	
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+	<script src="http://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript">
+		var myApp = angular.module('StabilityMetrics', []);
+		
+		myApp.controller('MainCtrl', function(DataService, $timeout) {
+			var main = this;
+						
+			main.performance = null;
+			main.circuitBreakers = null;
+			main.concurrencyThrottles = null;
+			main.retries = null;
+			
+			DataService.getBeans().then(function(data) {
+				main.performance = data.performance;
+				main.p2 = [
+					{
+						"name": "Performance",
+						"caption": "Standard performance monitored MBeans",
+						"data": data.performance,
+						"divId": "perfData"
+					},
+					{
+						"name": "Webservice Endpoints",
+						"caption": "Endpoints providing a web service",
+						"data": data['webservice.endpoint.performance'],
+						"divId": "wsEndpointData"
+					},
+					{
+						"name": "Webservice Clients",
+						"caption": "Clients that call out to external web services",
+						"data": data['webservice.client.performance'],
+						"divId": "wsClientData"
+					}
+				];
+				
+				var bareCbs = data.circuitBreakers;
+				var numCbs = bareCbs.length;
+				var stateClasses = {
+					"OpenState": "danger",
+					"ClosedState": "success",
+					"HalfOpenState": "warning"
+				};
+				for(var i = 0; i < numCbs; i++) {
+					var cb = bareCbs[i];
+					cb.stateClass = stateClasses[cb.state];
+					cb.tripsClass = cb.totalNumTrips > 0 ? "danger" : "success";
+				}
+				main.circuitBreakers = bareCbs;
+				
+				var cts = data.concurrencyThrottles;
+				var numCts = cts.length;
+				for(var i = 0; i < numCts; i++) {
+					var ct = cts[i];
+					ct.tripClass = ct.tripCount > 0 ? "danger" : "success";
+				}
+				main.concurrencyThrottles = cts;
+				
+				var rs = data.retries;
+				var numRetries = rs.length;
+				for(var i = 0; i < numRetries; i++) {
+					var retry = rs[i];
+					retry.opsClass = retry.failedOperations > 0 ? "danger" : "success";
+					retry.retryClass = retry.retriedOperations > 0 ? "warning" : "success";
+				}
+				main.retries = rs;
+
+				// Wait for DOM to render before attaching data tables:  http://tech.endeepak.com/blog/2014/05/03/waiting-for-angularjs-digest-cycle/
+				// Luckily, this callback is only called once per page load.
+				$timeout(function() {
+					var options = { "paging": false, "searching": false };
+					for(var i = 0; i < main.p2.length; i++) {
+						var name = '#' + main.p2[i].divId + "Table";
+						$(name).DataTable(options);						
+					}
+					$('#cbTable').DataTable(options);
+					$('#ctTable').DataTable(options);
+					$('#rtTable').DataTable(options);
+			
+				    $('.perfTable tbody').on('click', 'tr.details-control', function () {
+						var tr = $(this).closest('tr');
+				    	var table = tr.closest('table').DataTable({ "retrieve": true });
+						var row = table.row( tr );
+						var parentRowName = row.data()[0];
+						console.log(parentRowName);
+				 
+						if ( row.child.isShown() ) {
+							// This row is already open - close it
+							row.child.hide();
+							tr.removeClass('shown');
+							tr.removeClass('parent-shade');
+						}
+						else {
+							// Open this row
+							DataService.getMethodPerformance(parentRowName).then(function(data) {
+								var dataLength = data.length;
+								var rowList = [];
+								for(var i = 0; i < dataLength; i++) {
+									var m = data[i];
+									var t = $('<tr class="bg-info"><td>' + m.name + '</td><td>' + m.min + '</td><td>' + m.max + '</td><td>' + m.avg + '</td><td>' + m.rpm + '</td><td>' + m.ex +'</td><td>' + m.numAccess + '</td><td>' + m.cumulative + '</td></tr>');
+									rowList.push(t);
+								}
+								row.child( rowList ).show();
+								tr.addClass('shown');		
+								tr.addClass('parent-shade');
+							});
+						}
+					});
+				});
+
+			});
+			
+		});
+		
+		myApp.service('DataService', function($http) {
+			var service = this;
+
+			service.getBeans = function() {
+				return $http.get('./monitor/beans').then(function(result) {
+					data = result.data;
+					return data;
+				});
+			};
+
+			service.getMethodPerformance = function(beanName) {
+				return $http.get('./monitor/bean/' + encodeURIComponent(beanName)).then(function(result) {
+					data = result.data;
+					return data;
+				});
+			};
+		});		
+	</script>
+  </body>
+</html>
