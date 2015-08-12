@@ -8,6 +8,7 @@ import javax.management.ObjectInstance
 import javax.management.ObjectName
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component
 
 import com.kendelong.util.performance.PerformanceMonitor
@@ -15,8 +16,10 @@ import com.kendelong.util.performance.PerformanceMonitor
 @Component
 public class MbeanDataRetriever
 {
-	private String baseDomain = 'app.mystuff'
-	private def domains = ['performance', 'webservice.client.performance', 'webservice.endpoint.performance']
+	@Value('${stability.baseDomain}')
+	private String baseDomain
+	
+	private def perfDomains = ['performance', 'webservice.client.performance', 'webservice.endpoint.performance']
 	
 	@Autowired
 	private MBeanServer mbeanServer
@@ -24,7 +27,7 @@ public class MbeanDataRetriever
 	public Object getBeansData()
 	{
 		def result = [:]
-		domains.each {
+		perfDomains.each {
 			domain ->
 			def performance = getPerformanceMbeans("${baseDomain}.${domain}:*", { key, value -> !key.contains('.') })
 			result[domain] = performance
