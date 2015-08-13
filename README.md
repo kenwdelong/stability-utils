@@ -12,7 +12,7 @@ This artifact is available on Maven Central.
 	<dependency>
 	    <groupId>com.github.kenwdelong</groupId>
 	    <artifactId>stability-utils</artifactId>
-	    <version>1.2.2</version>
+	    <version>1.3.1</version>
 	</dependency>
 
 ## Releases
