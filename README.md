@@ -16,8 +16,9 @@ This artifact is available on Maven Central.
 	</dependency>
 
 ## Releases
-### 1.3.0 (August 12, 2015)
+### 1.3.1 (August 12, 2015)
 - add a web page to view the state of all the stability monitors (see screen shot below)
+- made all includes https
 
 ### 1.2.2 (July 23, 2015)
 - alter PooledHttpClientStrategy to reuse the threadsafe HttpClient instance and add stale connection checking 
