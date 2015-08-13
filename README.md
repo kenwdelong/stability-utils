@@ -16,6 +16,9 @@ This artifact is available on Maven Central.
 	</dependency>
 
 ## Releases
+### 1.3.0 (August 12, 2015)
+- add a web page to view the state of all the stability monitors (see screen shot below)
+
 ### 1.2.2 (July 23, 2015)
 - alter PooledHttpClientStrategy to reuse the threadsafe HttpClient instance and add stale connection checking 
 
@@ -248,4 +251,25 @@ Just create the beans:
 	<bean class="com.kendelong.util.ehcache.EhcacheJmxBootstrapper" autowire="byType"/>
 	<bean class="com.kendelong.util.ehcache.EhcacheExaminer"/>
 
-You can customize what gets exported from the bootstrapper by setting the boolean properties on the bean (not shown here). 
+You can customize what gets exported from the bootstrapper by setting the boolean properties on the bean (not shown here).
+
+# Web Interface 
+## Added in 1.3.0
+
+If you have a JMX viewer like JConsole or my [JMX Console](https://github.com/kenwdelong/jmx-console) you can always view the MBeans, but always one-by-one.  In version 1.3.0 a single web page was added that will allow you to see all of them at a glance.
+
+## Configuration
+
+There are only two classes, `com.kendelong.util.jmx.web.controller.JmxController` and `com.kendelong.util.jmx.web.service.MbeanDataRetriever`.  For default configuration, just add those packages to your Spring component-scanning path.  If you are using only one application context, like Spring Boot, you can just add `com.kendelong.util.jmx.web`.  If you have a traditional app with a root and a web context, you can add the controller to the web context and the `MbeanDataRetriever` to the root context (or add them both to the web context).  If you do this, the web page will be exposed on the URL `/admin/monitor`.
+
+There is one parameter to specify in your properties: `stability.baseDomain`.  This is the prefix for the JMX domain used to register the MBeans, and should be the same value that you inject into your `com.kendelong.util.spring.JmxExportingAspectPostProcessor`'s `jmxDomain` property. If you are using two different contexts, you can use the same value for `jmxDomain` for both.
+
+There are other configuration options as well:
+
+- If you want to change the URL, you can only instantiate the `MbeanDataRetriever`, and write your own controller.  You can look at the `JmxController`, it's dirt simple and delegates everything.  Just create your own controller and autowire in the `MbeanDataRetriever`.
+- Or, if you don't want to, or can't, add component scanning to the packages mentioned, you can use a standard bean definition to load either or both of the beans.
+- Or, you can create your own controller and just instantiate the `MbeanDataRetriever`. Note that you'll have to provide the `MBeanServer` and `baseDomain` properties.
+
+## Screen Shot
+
+![screenshot](https://raw.github.com/kenwdelong/stability-utils/master/misc/Console.jpg)
