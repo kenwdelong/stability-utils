@@ -1,5 +1,4 @@
-- Create an appender for Logback
-
+Aug 19, 2015: updated from commonslang 2 to 3
 
 == Release instructions
 
