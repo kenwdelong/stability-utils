@@ -9,6 +9,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.Ordered;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
@@ -52,7 +53,7 @@ import com.kendelong.util.monitoring.webservice.ExternalNameElementComputer;
  */
 @Aspect
 @ManagedResource(description="Monitor basic performance metrics")
-public class PerformanceMonitoringAspect
+public class PerformanceMonitoringAspect implements Ordered
 {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -61,6 +62,8 @@ public class PerformanceMonitoringAspect
 	private final ExternalNameElementComputer nameElementComputer = new ExternalNameElementComputer();
 	
 	private GraphiteClient graphiteClient;
+	
+	private int order = 0;
 	
 	@Around("bean(*Controller) or @within(com.kendelong.util.performance.MonitorPerformance)")
 	public Object monitorInvocation(ProceedingJoinPoint pjp) throws Throwable
@@ -149,4 +152,16 @@ public class PerformanceMonitoringAspect
 	{
 		this.graphiteClient = graphiteClient;
 	}
+	
+	@Override
+	public int getOrder()
+	{
+		return order;
+	}
+	
+	public void setOrder(int theOrder)
+	{
+		order = theOrder;
+	}
+
 }

@@ -12,10 +12,13 @@ This artifact is available on Maven Central.
 	<dependency>
 	    <groupId>com.github.kenwdelong</groupId>
 	    <artifactId>stability-utils</artifactId>
-	    <version>1.3.1</version>
+	    <version>1.3.2</version>
 	</dependency>
 
 ## Releases
+### 1.3.2 (September 4, 2015)
+- added Spring's Ordered interface so that users can control the order of the interceptors
+
 ### 1.3.1 (August 12, 2015)
 - add a web page to view the state of all the stability monitors (see screen shot below)
 - made all includes https
