@@ -78,12 +78,12 @@ public class PerformanceMonitor
 	
 	public double getAccessesPerMinute()
 	{
-		return getAccessesPerSecond()/60.0;
+		return getAccessesPerSecond()*60.0;
 	}
 
 	public double getAccessesPerHour()
 	{
-		return getAccessesPerMinute()/60.0;
+		return getAccessesPerMinute()*60.0;
 	}
 	
 	public int getNumberOfExceptions()

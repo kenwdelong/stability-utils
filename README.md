@@ -16,6 +16,9 @@ This artifact is available on Maven Central.
 	</dependency>
 
 ## Releases
+### 1.3.3 (September 15, 2015)
+- fix ridiculous bug in calculating requests per minute and hour
+
 ### 1.3.2 (September 4, 2015)
 - added Spring's Ordered interface so that users can control the order of the interceptors
 
