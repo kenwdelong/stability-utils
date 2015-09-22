@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.kendelong.util.monitoring.graphite.GraphiteClient;
@@ -162,6 +163,12 @@ public class PerformanceMonitoringAspect implements Ordered
 	public void setOrder(int theOrder)
 	{
 		order = theOrder;
+	}
+	
+	@ManagedOperation(description="Reset all monitors")
+	public void resetAllMonitors()
+	{
+		monitors.clear();
 	}
 
 }

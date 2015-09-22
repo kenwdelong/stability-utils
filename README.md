@@ -16,6 +16,9 @@ This artifact is available on Maven Central.
 	</dependency>
 
 ## Releases
+### 1.3.4 (September 21, 2015)
+- add ability to reset all the monitors on an interceptor
+
 ### 1.3.3 (September 15, 2015)
 - fix ridiculous bug in calculating requests per minute and hour
 
