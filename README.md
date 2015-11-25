@@ -12,10 +12,13 @@ This artifact is available on Maven Central.
 	<dependency>
 	    <groupId>com.github.kenwdelong</groupId>
 	    <artifactId>stability-utils</artifactId>
-	    <version>1.3.4</version>
+	    <version>1.3.5</version>
 	</dependency>
 
 ## Releases
+### 1.3.5 (November 25, 2015)
+- add ability to the the thread limit on ConcurrencyThrottle on a bean-by-bean basis
+
 ### 1.3.4 (September 21, 2015)
 - add ability to reset all the monitors on an interceptor
 
@@ -121,7 +124,10 @@ something is wrong.  Allowing more threads in to hang up, consume system resourc
 just throwing gas on the fire.  This component will throw a runtime exception if the number of concurrent threads exceeds a maximum number
 (*threadLimit*).
 
-Annotate methods to be throttled with the `ConcurrencyThrottle` annotation.
+Annotate methods to be throttled with the `ConcurrencyThrottle` annotation.  As of 1.3.5, the annotation can take an integer attribute
+called `threadLimit` (default 20).  The only way to set the limit is when a thread goes thru the aspect, so at startup it will have the default
+value until you call the component.  Also, do not annotate two methods on the same bean with different thread limits - they will fight, each
+setting the limit on each call, leading to unpredictable behavior.
 
 Configuration is the same as for the Performance Monitor above.
 

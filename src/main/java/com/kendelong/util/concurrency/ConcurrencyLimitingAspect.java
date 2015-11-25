@@ -50,9 +50,12 @@ public class ConcurrencyLimitingAspect implements Ordered
 	
 	private int order = 0;
 
-	@Around("@annotation(com.kendelong.util.concurrency.ConcurrencyThrottle)")
-	public Object applyConcurrencyThrottle(ProceedingJoinPoint pjp) throws Throwable
+//	@Around("@annotation(com.kendelong.util.concurrency.ConcurrencyThrottle)")
+//	public Object applyConcurrencyThrottle(ProceedingJoinPoint pjp) throws Throwable
+	@Around("@annotation(ann)")
+	public Object applyConcurrencyThrottle(ProceedingJoinPoint pjp, ConcurrencyThrottle ann) throws Throwable
 	{
+		this.threadLimit.set(ann.threadLimit());
 		String key = null;
 		if(graphiteClient != null)
 		{
