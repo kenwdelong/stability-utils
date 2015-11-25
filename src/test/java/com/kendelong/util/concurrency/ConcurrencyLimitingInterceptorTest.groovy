@@ -19,22 +19,24 @@ public class ConcurrencyLimitingInterceptorTest
 	@Test(expected=ConcurrencyLimitExceededException.class)
 	public void testZeroLimitBlowsUp() throws Throwable
 	{
+		ConcurrencyThrottle annotation = [ threadLimit: { 0 }, annotationType: { ConcurrencyThrottle.class } ] as ConcurrencyThrottle
 		ConcurrencyLimitingAspect interceptor = new ConcurrencyLimitingAspect();
 		interceptor.setThreadLimit(0);
 		def pjp = {} as ProceedingJoinPoint
-		interceptor.applyConcurrencyThrottle(pjp);
+		interceptor.applyConcurrencyThrottle(pjp, annotation);
 		fail("It should have blown up");
 	}
 	
 	@Test
 	public void testFiniteLimitAllowsCall() throws Throwable
 	{
+		ConcurrencyThrottle annotation = [ threadLimit: { 20 }, annotationType: { ConcurrencyThrottle.class } ] as ConcurrencyThrottle
 		ProceedingJoinPoint mi = createMock(ProceedingJoinPoint.class);
 		expect(mi.proceed()).andReturn(null);
 		replay(mi);
 		
 		ConcurrencyLimitingAspect interceptor = new ConcurrencyLimitingAspect();
-		interceptor.applyConcurrencyThrottle(mi);
+		interceptor.applyConcurrencyThrottle(mi, annotation);
 		verify(mi);
 	}
 	
