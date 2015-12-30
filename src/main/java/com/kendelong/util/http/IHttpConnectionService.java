@@ -17,6 +17,7 @@ public interface IHttpConnectionService
 	 * @throws Exception currently logs a warn on an exception and throws it back to the client 
 	 */
 	public HttpResponseObject postStringAsRequestEntity(String connectionURL, String data, String contentType) throws Exception;
+	public HttpResponseObject postStringAsRequestEntity(String connectionURL, String data, String contentType, Map<String, String> headers) throws Exception;
 	
 	/**
 	 * This method accepts an HTTP connection URL and input data.
@@ -53,6 +54,7 @@ public interface IHttpConnectionService
 	 * @throws Exception currently logs a warn on an exception and throws it back to the client 
 	 */
 	public HttpResponseObject getResult(String connectionUrl, Map<String, String> parameters) throws Exception;
+	public HttpResponseObject getResult(String connectionUrl, Map<String, String> parameters, Map<String, String> headers) throws Exception;
 
 	public HttpResponseObject simpleGet(String url) throws Exception;
 

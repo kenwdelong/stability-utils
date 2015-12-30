@@ -3,6 +3,7 @@ package com.kendelong.util.http;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,13 +32,24 @@ public class HttpConnectionService implements IHttpConnectionService
 	private IHttpClientStrategy httpClientStrategy;
 
 	@Override
-	public HttpResponseObject postStringAsRequestEntity(String connectionURL, String data, String contentType) throws Exception
+	public HttpResponseObject postStringAsRequestEntity(String connectionURL, String data, String contentType, Map<String, String> headers) throws Exception
 	{
 		HttpPost postRequest = new HttpPost(connectionURL);
 		StringEntity entity = new StringEntity(data, ENCODING);
 		entity.setContentType(contentType);
 		postRequest.setEntity(entity);
+		for(String name : headers.keySet())
+		{
+			postRequest.setHeader(name, headers.get(name));
+		}
 		return doExecuteAndGetResponse(postRequest);		
+	}
+		
+	@Override
+	public HttpResponseObject postStringAsRequestEntity(String connectionURL, String data, String contentType) throws Exception
+	{
+		Map<String, String> headers = new HashMap<>();
+		return postStringAsRequestEntity(connectionURL, data, contentType, headers);
 	}
 		
 	@Override
@@ -71,8 +83,7 @@ public class HttpConnectionService implements IHttpConnectionService
 
 
 	@Override
-	public HttpResponseObject getResult(String connectionUrl, Map<String, String> parameters)
-			throws Exception
+	public HttpResponseObject getResult(String connectionUrl, Map<String, String> parameters, Map<String, String> headers) throws Exception
 	{
 		// add parameters to GET
 		StringBuilder urlWithParams = new StringBuilder(connectionUrl);
@@ -88,7 +99,19 @@ public class HttpConnectionService implements IHttpConnectionService
 			// Wish I had Groovy here...sigh.
 		}
 		HttpGet getRequest = new HttpGet(urlWithParams.toString());
+		for(String name : headers.keySet())
+		{
+			getRequest.setHeader(name, headers.get(name));
+		}
+
 		return doExecuteAndGetResponse(getRequest);
+	}
+	
+	@Override
+	public HttpResponseObject getResult(String connectionUrl, Map<String, String> parameters) throws Exception
+	{
+		Map<String, String> headers = new HashMap<>();
+		return getResult(connectionUrl, parameters, headers);
 	}
 	
 	@Override

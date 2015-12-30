@@ -12,12 +12,15 @@ This artifact is available on Maven Central.
 	<dependency>
 	    <groupId>com.github.kenwdelong</groupId>
 	    <artifactId>stability-utils</artifactId>
-	    <version>1.3.5</version>
+	    <version>1.3.6</version>
 	</dependency>
 
 ## Releases
+### 1.3.6 (December 29, 2015)
+- add headers to `HttpConnectionService`
+
 ### 1.3.5 (November 25, 2015)
-- add ability to the the thread limit on ConcurrencyThrottle on a bean-by-bean basis
+- add ability to the the thread limit on `ConcurrencyThrottle` on a bean-by-bean basis
 
 ### 1.3.4 (September 21, 2015)
 - add ability to reset all the monitors on an interceptor
