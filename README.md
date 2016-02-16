@@ -16,6 +16,9 @@ This artifact is available on Maven Central.
 	</dependency>
 
 ## Releases
+### 1.3.7 (February 15, 2016)
+- turn off (by default) the sending of method-level data to Graphite from the performance monitor. To re-enable, see the documentation section below.
+
 ### 1.3.6 (December 29, 2015)
 - add headers to `HttpConnectionService`
 
@@ -67,12 +70,26 @@ By default, it wraps and exports any beans with names like `*Controller`.  You c
 `MonitorPerformance` aspect on the class.  As of 1.1.1, we no longer auto-proxy beans like `*Service` because there are so many services
 running around, the proxying might be too fine-grained (like Springs converter services, e.g.).
 
+## Graphite
+
+The aspect will send its data to Graphite if you give it a GraphiteClient reference (see below).  Up until 1.3.6, each bean sent the number of accesses and the 
+execution time for the bean as a whole as well as for each method on the bean.  Beware - this can result in a ton of traffic to your graphite server, 
+because StatsD will send data for each counter and timer it has in memory every 10 seconds (by default). So every method that was ever called will have a 
+counter and a timer, and it will be written to your Whipser storage area every 10 seconds. At least on an AWS EBS mount, that causes a lot of IOPS, and forces
+you to provision much larger volumes than needed for the size of the data.
+
+Therefore, As of 1.3.7, we no longer send method data by default.  The sending of Controller method data is controlled by a new attribute on the aspect 
+called `sendControllerMethodDataToGraphite`. It is `false` by default. For beans that are annotated with `@MonitorPerformance`, the annotation
+has a new attribute called `sendMethodDataToGraphite`, which is also false by default. This can be used to turn on the method-level data on a
+bean-by-bean basis
+
 ## Configuration
 
-You need to configure the bean in the Spring context as a prototype:
+You need to configure the bean in the Spring context as a prototype (both properties are optional):
 
 	<bean class="com.kendelong.util.performance.PerformanceMonitoringAspect" scope="prototype">
 		<property name="graphiteClient" ref="graphiteClient"/>
+		<property name="sendControllerMethodDataToGraphite" value="false"/>
 	</bean>
 
 Then, in order to see the data (no use collecting data if you can't see it!), export the bean to JMX:

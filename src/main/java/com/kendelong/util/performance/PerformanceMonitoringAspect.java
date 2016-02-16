@@ -42,6 +42,7 @@ import com.kendelong.util.monitoring.webservice.ExternalNameElementComputer;
 			</map>
 		</property>
 		<property name="jmxDomain" value="app.mystuff"/>
+		<property name="sendControllerMethodDataToGraphite" value="false"/>
 	</bean>
 
  * }
@@ -64,10 +65,24 @@ public class PerformanceMonitoringAspect implements Ordered
 	
 	private GraphiteClient graphiteClient;
 	
-	private int order = 0;
+	private Boolean sendControllerMethodDataToGraphite = false;
 	
-	@Around("bean(*Controller) or @within(com.kendelong.util.performance.MonitorPerformance)")
-	public Object monitorInvocation(ProceedingJoinPoint pjp) throws Throwable
+	private int order = 0;
+
+	@Around("bean(*Controller)")
+	public Object monitorControllers(ProceedingJoinPoint pjp) throws Throwable
+	{
+		return monitorInvocation(pjp, sendControllerMethodDataToGraphite);
+	}
+	
+	@Around("@within(ann)")
+	public Object monitorAnnotatedClasses(ProceedingJoinPoint pjp, MonitorPerformance ann) throws Throwable
+	{
+		return monitorInvocation(pjp, ann.sendMethodDataToGraphite());
+	}
+	
+	//@Around("bean(*Controller) or @within(com.kendelong.util.performance.MonitorPerformance)")
+	public Object monitorInvocation(ProceedingJoinPoint pjp, boolean includeMethods) throws Throwable
 	{
 		String classKey = StringUtils.substringAfterLast(pjp.getSignature().getDeclaringTypeName(), ".");
 		String methodName = pjp.getSignature().getName();
@@ -85,7 +100,7 @@ public class PerformanceMonitoringAspect implements Ordered
 				graphitePrefix = "performance.";
 				if(nameElement != null) graphitePrefix = "webservice." + nameElement + ".";
 				graphiteClient.increment(graphitePrefix + classKey + ".accesses"); 
-				graphiteClient.increment(graphitePrefix + methodKey + ".accesses"); 
+				if(includeMethods) graphiteClient.increment(graphitePrefix + methodKey + ".accesses"); 
 			}
 
 			value = pjp.proceed();
@@ -101,7 +116,7 @@ public class PerformanceMonitoringAspect implements Ordered
 			if(graphiteClient != null)
 			{
 				graphiteClient.time(graphitePrefix + classKey, duration);
-				graphiteClient.time(graphitePrefix + methodKey, duration);
+				if(includeMethods) graphiteClient.time(graphitePrefix + methodKey, duration);
 			}
 			
 			return value;
@@ -113,7 +128,7 @@ public class PerformanceMonitoringAspect implements Ordered
 			if(graphiteClient != null)
 			{
 				graphiteClient.increment(graphitePrefix + classKey + ".error");
-				graphiteClient.increment(graphitePrefix + methodKey + ".error");
+				if(includeMethods) graphiteClient.increment(graphitePrefix + methodKey + ".error");
 			}			
 			throw t;
 		}
@@ -169,6 +184,17 @@ public class PerformanceMonitoringAspect implements Ordered
 	public void resetAllMonitors()
 	{
 		monitors.clear();
+	}
+
+	public Boolean getSendControllerMethodDataToGraphite()
+	{
+		return sendControllerMethodDataToGraphite;
+	}
+
+	@ManagedAttribute(description="Whether to send dedicated method-level data to graphite for Controllers")
+	public void setSendControllerMethodDataToGraphite(Boolean sendControllerMethodDataToGraphite)
+	{
+		this.sendControllerMethodDataToGraphite = sendControllerMethodDataToGraphite;
 	}
 
 }
