@@ -4,19 +4,28 @@ import java.text.NumberFormat;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedOperationParameter;
 import org.springframework.jmx.export.annotation.ManagedOperationParameters;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
+
+/**
+ * Allows one to use JMX to examine the contents of the Ehcaches in the JVM.  Meant for display in an HTML page.
+ * 
+ * @author Ken
+ */
 @ManagedResource(objectName="net.sf.ehcache:name=CacheContentsExaminer",
 				description="Looking inside the EhCaches")
 public class EhcacheExaminer 
 {
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	@ManagedOperation(description="Show the keys for the items in the given cache")
 	@ManagedOperationParameters
 	({
@@ -26,32 +35,14 @@ public class EhcacheExaminer
 	public String listKeysFor(String cacheManagerName, String cacheName)
 	{
 		List<?> keys = null;
-		boolean managerFound = false;
-		for(CacheManager cacheManager: CacheManager.ALL_CACHE_MANAGERS)
+		
+		Ehcache cache = findCache(cacheManagerName, cacheName);
+		if(cache == null)
 		{
-			if(cacheManager.getName().equals(cacheManagerName))
-			{
-				managerFound = true;
-				try
-				{
-					Ehcache cache = cacheManager.getEhcache(cacheName);
-					if(cache == null)
-					{
-						return "Cache " + cacheName + " not found";
-					}
-					keys = cache.getKeys();
-					break;
-				}
-				catch(Exception e)
-				{
-					return e.toString();
-				}
-			}
+			logger.warn("Could not find cache [{}] in cacheManager [{}]", cacheName, cacheManagerName);
+			return "Cache not found";
 		}
-		if(!managerFound)
-		{
-			return "CacheManager " + cacheManagerName + " not found";
-		}
+		keys = cache.getKeys();
 		
 		StringBuilder keyNames = new StringBuilder();
 		if(keys != null)

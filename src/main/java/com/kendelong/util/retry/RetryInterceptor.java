@@ -7,11 +7,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
@@ -65,7 +65,9 @@ public class RetryInterceptor implements Ordered
 	private final AtomicInteger failedOperations = new AtomicInteger();
 	private final Map<String, AtomicInteger> failedMethods = new ConcurrentHashMap<String, AtomicInteger>(); 
 	
-	private final Log logger = LogFactory.getLog(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	private int retryBaseDelayInMs = 100;
 	
 	private GraphiteClient graphiteClient;
 
@@ -89,6 +91,9 @@ public class RetryInterceptor implements Ordered
 			if(numAttempts > 0)
 			{
 				// It's a retry; log it
+				int sleepDelay = retryBaseDelayInMs*numAttempts;
+				logger.info("Sleeping [{}] ms before retrying invocation [{}]; attempt [{}]", sleepDelay, key, numAttempts);
+				Thread.sleep(sleepDelay);
 				retriedOperations.incrementAndGet();
 				if(graphiteClient != null) graphiteClient.increment(key + ".retries");
 			}
@@ -216,6 +221,17 @@ public class RetryInterceptor implements Ordered
 	public void setGraphiteClient(GraphiteClient graphiteClient)
 	{
 		this.graphiteClient = graphiteClient;
+	}
+
+	@ManagedAttribute(description="The base delay in ms used in retries")
+	public int getRetryBaseDelayInMs()
+	{
+		return retryBaseDelayInMs;
+	}
+
+	public void setRetryBaseDelayInMs(int retryBaseIntervalInMs)
+	{
+		this.retryBaseDelayInMs = retryBaseIntervalInMs;
 	}
 
 }

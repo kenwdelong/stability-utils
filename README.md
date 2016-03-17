@@ -16,6 +16,12 @@ This artifact is available on Maven Central.
 	</dependency>
 
 ## Releases
+### 1.3.8 (March 17, 2016)
+- top o' the mornin' to ya!
+- added escalating delay to retry interceptor
+- added logging of retried calls to retry interceptor
+- refactored some code in EhcacheExaminer
+
 ### 1.3.7 (February 15, 2016)
 - turn off (by default) the sending of method-level data to Graphite from the performance monitor. To re-enable, see the documentation section below.
 
@@ -161,6 +167,10 @@ the other thread is done updating the record, you may simply want to try your up
 exception names that you want to catch and retry.  Up to a certain number (*maxRetries*) retry attempts will be made.
 
 Annotate methods to be retried with the `RetryableOperation` annotation.
+
+The interceptor will pause `retryBaseDelayInMs`*retryNumber.  `retryBaseDelayInMs` is 100 by default, so the first retry will wait 100 ms before
+invoking, the second retry will wait 200 ms, etc.  If you have a high number for *maxRetries* you might want to make `retryBaseDelayInMs` smaller so
+that you don't tie up your thread for long periods of time. [added in 1.3.8]
 
 Configuration is the same as for the Performance Monitor above.
 
