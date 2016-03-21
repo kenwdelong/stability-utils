@@ -12,10 +12,13 @@ This artifact is available on Maven Central.
 	<dependency>
 	    <groupId>com.github.kenwdelong</groupId>
 	    <artifactId>stability-utils</artifactId>
-	    <version>1.3.7</version>
+	    <version>1.3.9</version>
 	</dependency>
 
 ## Releases
+### 1.3.9 (March 21, 2016)
+- fixed EhcacheExaminer to actually display the individual cache entries
+
 ### 1.3.8 (March 17, 2016)
 - top o' the mornin' to ya!
 - added escalating delay to retry interceptor

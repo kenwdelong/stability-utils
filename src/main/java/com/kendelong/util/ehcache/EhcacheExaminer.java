@@ -1,6 +1,8 @@
 package com.kendelong.util.ehcache;
 
+import java.lang.reflect.Method;
 import java.text.NumberFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,6 +16,7 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.Element;
 
 /**
  * Allows one to use JMX to examine the contents of the Ehcaches in the JVM.  Meant for display in an HTML page.
@@ -114,18 +117,51 @@ public class EhcacheExaminer
 		@ManagedOperationParameter(name="cacheName", description="Name of the cache (pick from above list)"),
 		@ManagedOperationParameter(name="key", description="The key for the item (use listKeysFor() above)")
 	})
-	public String examineCacheContentsWithStringKey(String cacheManagerName, String cacheName, String key)
+	public String examineCacheContentsWithStringKey(String cacheManagerName, String cacheName, String keyName)
 	{
-		Object o = null;
+		Element element = null;
 		Ehcache cache = findCache(cacheManagerName, cacheName);
-		if(cache != null)
-			o = cache.get(key);
-		else
+		
+		if(cache == null)
+		{
 			return "Cache " + cacheName + " not found.";
-		if(o != null)
-			return o.toString();
+		}
+
+		// Keys are not always Strings!!  So we have to use this wonky way of locating the actual key we want
+		@SuppressWarnings("unchecked")
+		Object key = cache.getKeys().stream().filter(k -> keyName.equals(k.toString())).findFirst().orElse(null);
+		if(key != null)
+		{
+			element = cache.get(key);
+		}
 		else
-			return "null";
+		{
+			return "Key [" + keyName + "] could not be located";
+		}
+		
+		if(element == null) return "null object returned from cache";
+		
+		StringBuilder builder = new StringBuilder();
+		builder.append("Creation time: ").append(new Date(element.getCreationTime())).append("<br/>")
+		.append("Last access time: ").append(new Date(element.getLastAccessTime())).append("<br/>")
+			.append("Expiration time: ").append(new Date(element.getExpirationTime())).append("<br/>")
+			.append("value: ").append(element.getObjectValue().toString()).append("<br/>");
+		
+		try
+		{
+			// When used with hibernate (in 4.3.11, anyway) the values are wrapped in AbstractReadWriteEhcacheAccessStrategy$Item classed
+			// Those hold CacheEntries, and so on and so on. This helps get out a litte more information
+			Object value = element.getObjectValue();
+			Method getValueMethod = value.getClass().getMethod("getValue", new Class<?>[]{} );	
+			Object o = getValueMethod.invoke(value, new Object[]{});
+			builder.append("Inner value: ").append(o.toString()).append("<br/>");
+		}
+		catch(Exception e)
+		{
+			logger.warn("Problem unwrapping Ehcache elements: " + e.getMessage());
+		}
+		
+		return builder.toString();
 	}
 
 	private Ehcache findCache(String cacheManagerName, String cacheName)
