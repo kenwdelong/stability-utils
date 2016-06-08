@@ -17,7 +17,7 @@ public class JmxController
 	@RequestMapping()
 	public String getMainPage()
 	{
-		String page = this.getClass().getClassLoader().getResourceAsStream("com/kendelong/util/jmx/index.html").text;
+		String page = JmxController.class.getClassLoader().getResourceAsStream("com/kendelong/util/jmx/index.html").text;
 	}
 	
 	@RequestMapping("/beans")

@@ -12,10 +12,13 @@ This artifact is available on Maven Central.
 	<dependency>
 	    <groupId>com.github.kenwdelong</groupId>
 	    <artifactId>stability-utils</artifactId>
-	    <version>1.3.9</version>
+	    <version>1.3.10</version>
 	</dependency>
 
 ## Releases
+### 1.3.10 (June 7, 2016)
+- make it slightly easier to subclass the controller to customize the path
+
 ### 1.3.9 (March 21, 2016)
 - fixed EhcacheExaminer to actually display the individual cache entries
 
