@@ -7,6 +7,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
@@ -40,6 +41,7 @@ import com.kendelong.util.monitoring.graphite.GraphiteClient;
  */
 @Aspect
 @ManagedResource(description="An interceptor that limits the number of threads that can be in a component at any one time")
+@Order(300)
 public class ConcurrencyLimitingAspect implements Ordered
 {
 	private final AtomicInteger threadLimit = new AtomicInteger(20);

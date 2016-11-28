@@ -16,6 +16,10 @@ This artifact is available on Maven Central.
 	</dependency>
 
 ## Releases
+### 1.4.0 (November 28, 2016)
+- hard-code the order into the `@Order` annotation (see below)
+- updated dependencies
+
 ### 1.3.10 (June 7, 2016)
 - make it slightly easier to subclass the controller to customize the path
 
@@ -182,6 +186,24 @@ Configuration is the same as for the Performance Monitor above.
 
 Note that in Spring AOP, only one aspect instance proxies the entire bean, even if more than one method is annotated. So the state of the 
 component will be shared across method calls.
+
+# Ordering of Aspects (introduced in 1.4.0)
+The ordering of the aspects in this library is important. As many of the aspects carry per-joinpoint state, they need to be instantiated as prototype
+scope in Spring. However, I just noticed that the order is not being respected for prototype aspect instances.  I've submitted a (bug)[https://jira.spring.io/browse/SPR-14959] with Spring.  Until that can get fixed, we need to take a different approach here.  In this case,
+the `@Order` annoation _is_ respected.  So I need to hard-code the order values into the annotations.  This is not ideal, as it might conflict
+with other order values in the including project. But there's not much else I can see to do at the moment.
+
+The orders are, from highest priority (first interceptor encountered):
+- CircuitBreaker (order=100) - if you are going to fail fast, then fail _fast_
+- RetryInterceptor (order=200) - clear out all the state below before retrying
+- ConcurrencyThrottle (order=300)
+- PerformanceMonitor (order=400) - this is debatable, you might want to include all the retries, or the time spent waiting at the throttle, as part of the invocation time. For the time being, you are stuck (you can always fork this and change the value yourself).
+
+After this, I suggest you set values on your own project as such:
+- TransactionInterceptor: order = 500 (e.g., `@EnableTransactionManagement(order=500)` in your JavaConfig) - if you are retrying, you want the transaction cleared, or if you are waiting at the throttle you do not want a transaction open!
+- MethodSecurityInterceptor: order = 600 (e.g., `<global-method-security pre-post-annotations="enabled" order="600">` in XML config) - my method security accesses the database to check permissions, I'd like that to run in the same transaction (and Hibernate session) as the actual operation.
+
+If/when the Spring bug is fixed, I will remove the hard-coded `@Order` annoations.
 
 # Graphite Monitoring
 

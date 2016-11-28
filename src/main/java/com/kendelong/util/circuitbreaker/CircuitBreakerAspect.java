@@ -12,6 +12,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
@@ -59,6 +60,7 @@ import com.kendelong.util.monitoring.graphite.GraphiteClient;
  */
 @Aspect
 @ManagedResource(description="Circuit Breaker for protecting ourselves against badly behaving remote services")
+@Order(100)
 public class CircuitBreakerAspect implements Ordered
 {	
 	private final AtomicReference<ICircuitBreakerState> state = new AtomicReference<ICircuitBreakerState>();
