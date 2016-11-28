@@ -261,6 +261,7 @@
 						<artifactId>maven-gpg-plugin</artifactId>
 						<version>1.6</version>
 						<configuration>
+							<!-- Configured in settings.xml -->
 							<passphrase>${gpg.passphrase}</passphrase>
 						</configuration>
 						<executions>
