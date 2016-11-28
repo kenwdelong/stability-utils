@@ -23,3 +23,33 @@ http://blog.sonatype.com/2010/01/how-to-generate-pgp-signatures-with-maven/#.VGG
 http://blog.sonatype.com/2009/09/maven-tips-and-tricks-using-github/#.VGWHifnF98E
 
 http://central.sonatype.org/pages/releasing-the-deployment.html
+
+== Local Setup
+
+In Maven settings.xml, in servers section:
+
+		<!-- See http://datumedge.blogspot.com/2012/05/publishing-from-github-to-maven-central.html -->
+		<server>
+			<id>sonatype-nexus-snapshots</id>
+			<username>uuuu</username>
+			<password>pppp</password>
+		</server>
+		<server>
+			<id>sonatype-nexus-staging</id>
+			<username>uuuu</username>
+			<password>pppp</password>
+		</server>
+
+And add this profile:
+
+		<profile>
+			<id>sign</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<gpg.passphrase>phphph</gpg.passphrase>
+				<gpg.keyname>knknkn</gpg.keyname>
+			</properties>
+		</profile>
+		
