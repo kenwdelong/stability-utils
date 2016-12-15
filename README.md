@@ -16,6 +16,9 @@ This artifact is available on Maven Central.
 	</dependency>
 
 ## Releases
+### 1.4.1 (Dec 15, 2016)
+- Have `GraphiteAppender` log the prefix it's using for graphite buckets
+
 ### 1.4.0 (November 28, 2016)
 - hard-code the order into the `@Order` annotation (see below)
 - updated dependencies

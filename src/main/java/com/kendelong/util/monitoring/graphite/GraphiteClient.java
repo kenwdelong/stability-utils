@@ -32,6 +32,7 @@ public class GraphiteClient
 		try
 		{
 			statsdClient = new NonBlockingStatsDClient(prefix, statsdHost, statsdPort);
+			logger.info("Using [{}] as the prefix for graphite buckets", prefix);
 		}
 		catch(StatsDClientException e)
 		{
