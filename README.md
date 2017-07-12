@@ -16,6 +16,9 @@ This artifact is available on Maven Central.
 	</dependency>
 
 ## Releases
+### 1.5.0 (Dec 15, 2016)
+- updated dependencies
+
 ### 1.4.1 (Dec 15, 2016)
 - Have `GraphiteAppender` log the prefix it's using for graphite buckets
 
