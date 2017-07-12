@@ -17,6 +17,8 @@ This artifact is available on Maven Central.
 
 ## Releases
 ### 1.5.0 (Dec 15, 2016)
+- add ability to do PUTs and PATCHes to HttpConnectionService
+- add ability to disable chunked transfer encoding to HttpConnectionService
 - updated dependencies
 
 ### 1.4.1 (Dec 15, 2016)
