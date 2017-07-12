@@ -1,5 +1,7 @@
 package com.kendelong.util.http;
 
+import static com.kendelong.util.http.HttpEntityEnclosingMethod.POST;
+
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -7,8 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import javax.annotation.PostConstruct;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -17,32 +19,65 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 
 public class HttpConnectionService implements IHttpConnectionService
 {
-	private final Log logger = LogFactory.getLog(this.getClass());
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	public static final String ENCODING = "UTF-8";
 	private IHttpClientStrategy httpClientStrategy;
 
 	@Override
-	public HttpResponseObject postStringAsRequestEntity(String connectionURL, String data, String contentType, Map<String, String> headers) throws Exception
+	public HttpResponseObject sendStringAsRequestEntity(String connectionURL, HttpEntityEnclosingMethod method, String data, String contentType, Map<String, String> headers) throws Exception
 	{
-		HttpPost postRequest = new HttpPost(connectionURL);
+		return sendStringAsRequestEntity(connectionURL, method, data, contentType, headers, true);
+	}
+	
+	@Override
+	public HttpResponseObject sendStringAsRequestEntity(String connectionURL, HttpEntityEnclosingMethod method, String data, String contentType, Map<String, String> headers, boolean chunked) throws Exception
+	{
+		HttpEntityEnclosingRequestBase request;
+		switch(method)
+		{
+			case POST:
+				request = new HttpPost(connectionURL);
+				break;
+			case PUT:
+				request = new HttpPut(connectionURL);
+				break;
+			case PATCH:
+				request = new HttpPatch(connectionURL);
+				break;
+			default:
+				throw new UnsupportedOperationException("Can't process method [" + method + "]");
+		}
+		
 		StringEntity entity = new StringEntity(data, ENCODING);
 		entity.setContentType(contentType);
-		postRequest.setEntity(entity);
+		entity.setChunked(chunked);
+		request.setEntity(entity);
 		for(String name : headers.keySet())
 		{
-			postRequest.setHeader(name, headers.get(name));
+			request.setHeader(name, headers.get(name));
 		}
-		return doExecuteAndGetResponse(postRequest);		
+		return doExecuteAndGetResponse(request);		
+	}
+		
+	@Override
+	public HttpResponseObject postStringAsRequestEntity(String connectionURL, String data, String contentType, Map<String, String> headers) throws Exception
+	{
+		return sendStringAsRequestEntity(connectionURL, POST, data, contentType, headers);
 	}
 		
 	@Override
@@ -196,5 +231,15 @@ public class HttpConnectionService implements IHttpConnectionService
 	public void setHttpClientStrategy(IHttpClientStrategy httpClientStrategy)
 	{
 		this.httpClientStrategy = httpClientStrategy;
+	}
+	
+	@PostConstruct
+	public void init()
+	{
+		if(this.httpClientStrategy == null)
+		{
+			this.httpClientStrategy = new SimpleHttpClientStrategy();
+			logger.warn("No strategy detected; using Simple strategy");
+		}
 	}
 }

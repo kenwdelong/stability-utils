@@ -4,7 +4,44 @@ import java.util.Map;
 
 public interface IHttpConnectionService
 {
+	/**
+	 * This method accepts an HTTP connection URL, a Method, input data, and a content type
+	 * to be set in the header of the Post.
+	 * It returns any response back to the client
+	 * 
+	 * @param connectionURL is the HTTP URL to connect to.
+	 * @param data in a form matching the content type 
+	 * @param contentType is the String to be set as the Content-Type HTTP header
+	 * @param headers Map of HTTP headers to send 
+	 * @return the response
+	 * @throws Exception currently logs a warn on an exception and throws it back to the client 
+	 */
+	public HttpResponseObject sendStringAsRequestEntity(String connectionURL,
+														HttpEntityEnclosingMethod method, 
+														String data, 
+														String contentType,
+														Map<String, String> headers) throws Exception;
 	
+	/**
+	 * This method accepts an HTTP connection URL, a Method, input data, and a content type
+	 * to be set in the header of the Post.
+	 * It returns any response back to the client
+	 * 
+	 * @param connectionURL is the HTTP URL to connect to.
+	 * @param data in a form matching the content type 
+	 * @param contentType is the String to be set as the Content-Type HTTP header
+	 * @param headers Map of HTTP headers to send 
+	 * @param chunked set false to disable transfer encoding=chunked and force the use of the Content-Length header 
+	 * @return the response
+	 * @throws Exception currently logs a warn on an exception and throws it back to the client 
+	 */
+	public HttpResponseObject sendStringAsRequestEntity(String connectionURL,
+														HttpEntityEnclosingMethod method, 
+														String data, 
+														String contentType,
+														Map<String, String> headers, 
+														boolean chunked) throws Exception;
+
 	/**
 	 * This method accepts an HTTP connection URL, input data, and a content type
 	 * to be set in the header of the Post.
