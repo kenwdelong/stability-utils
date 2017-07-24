@@ -5,6 +5,14 @@ import java.util.Map;
 public interface IHttpConnectionService
 {
 	/**
+	 * Generic method to avoid the proliferation of every combination of parameters
+	 * @param request request object
+	 * @return response object
+	 * @throws Exception
+	 */
+	public HttpResponseObject sendGenericRequest(HttpRequest request) throws Exception;
+	
+	/**
 	 * This method accepts an HTTP connection URL, a Method, input data, and a content type
 	 * to be set in the header of the Post.
 	 * It returns any response back to the client

@@ -43,5 +43,27 @@ public class HttpConnectionServiceTest
 			System.out.println("Response was " + resp.getStatusCode());
 		}
 	}
+	
+	@Test
+	@Ignore
+	// https://stackoverflow.com/questions/5725430/http-test-server-that-accepts-get-post-calls
+	public void testGenericRequest() throws Exception
+	{
+		HttpRequest request = new HttpRequest()
+				.withUrl("http://httpbin.org/put")
+				.addHeader("X-Ken", "X Man")
+				.addQueryParameter("foo", "bar")
+				.postAsText("Hey")
+				.withChunkedEncoding(false)
+				.withMethod(HttpMethod.PUT)
+				;
+		
+		HttpConnectionService service = new HttpConnectionService();
+		service.setHttpClientStrategy(new SimpleHttpClientStrategy());
+		service.init();
+		
+		HttpResponseObject response = service.sendGenericRequest(request);
+		System.out.println(response.getBody());
+	}
 
 }

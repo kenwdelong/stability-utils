@@ -12,11 +12,14 @@ This artifact is available on Maven Central.
 	<dependency>
 	    <groupId>com.github.kenwdelong</groupId>
 	    <artifactId>stability-utils</artifactId>
-	    <version>1.4.1</version>
+	    <version>1.6.0</version>
 	</dependency>
 
 ## Releases
-### 1.5.0 (Dec 15, 2016)
+### 1.6.0 (July 24, 2017)
+- add a request object to stop the proliferation of request signatures in HttpConnectionService
+
+### 1.5.0 (July 12, 2017)
 - add ability to do PUTs and PATCHes to HttpConnectionService
 - add ability to disable chunked transfer encoding to HttpConnectionService
 - updated dependencies

@@ -3,6 +3,7 @@ package com.kendelong.util.http;
 import static com.kendelong.util.http.HttpEntityEnclosingMethod.POST;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,11 +20,16 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicNameValuePair;
@@ -38,6 +44,58 @@ public class HttpConnectionService implements IHttpConnectionService
 	public static final String ENCODING = "UTF-8";
 	private IHttpClientStrategy httpClientStrategy;
 
+	@Override
+	public HttpResponseObject sendGenericRequest(HttpRequest request) throws Exception
+	{
+		String urlWithQueryParams = createUrlWithQueryString(request.getConnectionURL(), request.getQueryParams());
+		HttpRequestBase apacheRequest = null;
+		switch(request.getMethod())
+		{
+			case GET:
+				apacheRequest = new HttpGet(urlWithQueryParams);
+				break;
+			case DELETE:
+				apacheRequest = new HttpDelete(urlWithQueryParams);
+				break;
+			case HEAD:
+				apacheRequest = new HttpHead(urlWithQueryParams);
+				break;
+			case OPTIONS:
+				apacheRequest = new HttpOptions(urlWithQueryParams);
+				break;
+			case PATCH:
+				apacheRequest = new HttpPatch(urlWithQueryParams);
+				break;
+			case POST:
+				apacheRequest = new HttpPost(urlWithQueryParams);
+				break;
+			case PUT:
+				apacheRequest = new HttpPut(urlWithQueryParams);
+				break;
+			case TRACE:
+				apacheRequest = new HttpTrace(urlWithQueryParams);
+				break;
+			default:
+				break;
+		}
+		
+		if(request.getMethod().supportsEntity())
+		{
+			HttpEntityEnclosingRequestBase entityRequest = (HttpEntityEnclosingRequestBase) apacheRequest;
+			StringEntity entity = new StringEntity(request.getData(), request.getEncoding());
+			entity.setContentType(request.getContentType());
+			entity.setChunked(request.isChunked());
+			entityRequest.setEntity(entity);
+		}
+		
+		for(String name : request.getHeaders().keySet())
+		{
+			apacheRequest.setHeader(name, request.getHeaders().get(name));
+		}
+		
+		return doExecuteAndGetResponse(apacheRequest);		
+	}
+	
 	@Override
 	public HttpResponseObject sendStringAsRequestEntity(String connectionURL, HttpEntityEnclosingMethod method, String data, String contentType, Map<String, String> headers) throws Exception
 	{
@@ -121,6 +179,19 @@ public class HttpConnectionService implements IHttpConnectionService
 	public HttpResponseObject getResult(String connectionUrl, Map<String, String> parameters, Map<String, String> headers) throws Exception
 	{
 		// add parameters to GET
+		final String queryString = createUrlWithQueryString(connectionUrl, parameters);
+		HttpGet getRequest = new HttpGet(queryString);
+		for(String name : headers.keySet())
+		{
+			getRequest.setHeader(name, headers.get(name));
+		}
+
+		return doExecuteAndGetResponse(getRequest);
+	}
+
+	private String createUrlWithQueryString(String connectionUrl, Map<String, String> parameters)
+			throws UnsupportedEncodingException
+	{
 		StringBuilder urlWithParams = new StringBuilder(connectionUrl);
 		if(parameters != null  && !parameters.isEmpty())
 		{
@@ -133,13 +204,8 @@ public class HttpConnectionService implements IHttpConnectionService
 			urlWithParams.deleteCharAt(urlWithParams.length() - 1);
 			// Wish I had Groovy here...sigh.
 		}
-		HttpGet getRequest = new HttpGet(urlWithParams.toString());
-		for(String name : headers.keySet())
-		{
-			getRequest.setHeader(name, headers.get(name));
-		}
-
-		return doExecuteAndGetResponse(getRequest);
+		final String queryString = urlWithParams.toString();
+		return queryString;
 	}
 	
 	@Override
