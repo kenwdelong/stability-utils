@@ -2,16 +2,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.kenwdelong</groupId>
 	<artifactId>stability-utils</artifactId>
-	<version>1.6.2-SNAPSHOT</version>
+	<version>1.7.0-SNAPSHOT</version>
     <name>Stability Utils</name>
     <description>A Spring-based library for utilities useful for keeping high-volume sites up and running.  Based partially on the 
                  book "Release It" by Michael Nygard.</description>
     <url>https://github.com/kenwdelong/stability-utils</url>
 
 	<properties>
-		<spring.version>4.3.9.RELEASE</spring.version>
-		<aspectj.version>1.8.10</aspectj.version>
-		<groovy.version>2.4.11</groovy.version>
+		<spring.version>5.0.5.RELEASE</spring.version>
+		<aspectj.version>1.8.13</aspectj.version>
+		<groovy.version>2.4.15</groovy.version>
 	</properties>
 
 	<dependencies>
@@ -45,7 +45,7 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.6</version>
+			<version>3.7</version>
 		</dependency>
 
 		<dependency>
@@ -71,29 +71,33 @@
 			<version>${groovy.version}</version>
 		</dependency>
 		
+<!-- 		<dependency> -->
+<!-- 			<groupId>net.sf.ehcache</groupId> -->
+<!-- 			<artifactId>ehcache-core</artifactId> -->
+<!-- 			<version>2.6.8</version> -->
+<!-- 		</dependency> -->
 		<dependency>
-			<groupId>net.sf.ehcache</groupId>
-			<artifactId>ehcache-core</artifactId>
-			<version>2.6.8</version>
-		</dependency>
-		
+			<groupId>org.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>3.5.2</version>
+		</dependency>		
 		
 		<!-- HTTP stuff -->
 		<!-- Putting the versions here explicitly because they are not always in sync -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.5.3</version>
+			<version>4.5.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpmime</artifactId>
-			<version>4.5.3</version>
+			<version>4.5.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
-			<version>4.4.6</version>
+			<version>4.4.9</version>
 		</dependency>		
 		
 		<!-- ==================== LOGGING ======================= -->
@@ -162,14 +166,14 @@
 					<dependency>
 						<groupId>org.codehaus.groovy</groupId>
 						<artifactId>groovy-eclipse-compiler</artifactId>
-						<version>2.9.2-01</version>
+						<version>2.9.2-04</version>
 					</dependency>
 					<!-- for 2.8.0-01 and later you must have an explicit dependency on 
 						groovy-eclipse-batch -->
 					<dependency>
 						<groupId>org.codehaus.groovy</groupId>
 						<artifactId>groovy-eclipse-batch</artifactId>
-						<version>2.4.3-01</version>
+						<version>2.4.13-02</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -223,6 +227,22 @@
 		</repository>
 	</distributionManagement>
 
+	<!-- I added this to stop Eclipse warnings. Even tho the artifacts were in the public content repo, it was still complaining -->
+	<pluginRepositories>
+		<pluginRepository>
+			<id>bintray</id>
+			<name>Groovy Bintray</name>
+			<!-- <url>https://dl.bintray.com/groovy/maven</url> -->
+			<url>http://localhost:8891/content/groups/public</url>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
 	<scm>
 		<connection>scm:git:git@github.com:kenwdelong/stability-utils.git</connection>
 		<url>scm:git:git@github.com:kenwdelong/stability-utils.git</url>
@@ -240,7 +260,7 @@
 	</licenses>
 	<developers>
 		<developer>
-			<email>kenwdelong@yahoo.com</email>
+			<email>kenwdelong@gmail.com</email>
 			<name>Ken DeLong</name>
 		</developer>
 	</developers>

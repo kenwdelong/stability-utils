@@ -16,6 +16,9 @@ This artifact is available on Maven Central.
 	</dependency>
 
 ## Releases
+### HEAD
+- update dependencies to be congruent to Spring Boot 2.0.1
+
 ### 1.6.1 (April 19, 2018)
 - format the numbers on the monitor web page a little nicer to make for easier comparisons
 
