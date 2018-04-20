@@ -49,13 +49,13 @@
 			<tr ng-repeat="service in perfData.data" class="details-control">
 				<td class="hidden">{{ service.oname }}</td>
 				<td>{{ service.name }}</td>
-				<td>{{ service.min }}</td>
-				<td>{{ service.max }}</td>
-				<td>{{ service.avg }}</td>
-				<td>{{ service.rpm }}</td>
-				<td>{{ service.ex }}</td>
-				<td>{{ service.numAccess }}</td>
-				<td>{{ service.cumulative }}</td>
+				<td class="text-right">{{ service.min | number }}</td>
+				<td class="text-right">{{ service.max | number }}</td>
+				<td class="text-right">{{ service.avg | number:2 }}</td>
+				<td class="text-right">{{ service.rpm | number:3 }}</td>
+				<td class="text-right">{{ service.ex  | number }}</td>
+				<td class="text-right">{{ service.numAccess | number }}</td>
+				<td class="text-right">{{ service.cumulative | number }}</td>
 			</tr>
 			</tbody>
 		  </table>
