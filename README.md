@@ -16,6 +16,9 @@ This artifact is available on Maven Central.
 	</dependency>
 
 ## Releases
+### 1.6.1 (April 19, 2018)
+- format the numbers on the monitor web page a little nicer to make for easier comparisons
+
 ### 1.6.0 (July 24, 2017)
 - add a request object to stop the proliferation of request signatures in HttpConnectionService
 
