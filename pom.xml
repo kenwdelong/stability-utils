@@ -71,16 +71,11 @@
 			<version>${groovy.version}</version>
 		</dependency>
 		
-<!-- 		<dependency> -->
-<!-- 			<groupId>net.sf.ehcache</groupId> -->
-<!-- 			<artifactId>ehcache-core</artifactId> -->
-<!-- 			<version>2.6.8</version> -->
-<!-- 		</dependency> -->
 		<dependency>
-			<groupId>org.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-			<version>3.5.2</version>
-		</dependency>		
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache-core</artifactId>
+			<version>2.6.8</version>
+		</dependency>
 		
 		<!-- HTTP stuff -->
 		<!-- Putting the versions here explicitly because they are not always in sync -->

@@ -3,9 +3,11 @@ package com.kendelong.util.ehcache;
 import javax.annotation.PostConstruct;
 import javax.management.MBeanServer;
 
-import org.ehcache.CacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.management.ManagementService;
 
 
 /**
@@ -33,11 +35,11 @@ public class EhcacheJmxBootstrapper
 	public void init()
 	{
 		// The CacheManager has a static List of all CM instances.
-//		for(CacheManager cacheMgr : CacheManager.ALL_CACHE_MANAGERS)
-//		{
-//			ManagementService.registerMBeans(cacheMgr, mbeanServer, registerManager, registerCaches, registerConfigurations, registerStatistics);
-//			logger.info("Registering EhCache CacheManager with MBean server " + cacheMgr.getName());
-//		}
+		for(CacheManager cacheMgr : CacheManager.ALL_CACHE_MANAGERS)
+		{
+			ManagementService.registerMBeans(cacheMgr, mbeanServer, registerManager, registerCaches, registerConfigurations, registerStatistics);
+			logger.info("Registering EhCache CacheManager with MBean server " + cacheMgr.getName());
+		}
 	}
 
 	public MBeanServer getMbeanServer()
