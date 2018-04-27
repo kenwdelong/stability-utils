@@ -4,6 +4,7 @@ mvn release:prepare
 mvn release:perform
 Log into Sonatype Nexus and find your artifacts under Staging Repositories
 Close, then release the artifacts.
+Watch for it in https://repo1.maven.org/maven2/com/github/kenwdelong/stability-utils/
 
 If you need to undo the release, revert the changes with 
 git reset --hard HEAD~2
