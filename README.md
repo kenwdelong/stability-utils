@@ -12,10 +12,13 @@ This artifact is available on Maven Central.
 	<dependency>
 	    <groupId>com.github.kenwdelong</groupId>
 	    <artifactId>stability-utils</artifactId>
-	    <version>1.6.0</version>
+	    <version>1.6.2</version>
 	</dependency>
 
 ## Releases
+### 1.6.2 (April 27, 2018)
+- format the numbers on the monitor web page sub rows a little nicer to make for easier comparisons
+
 ### 1.6.1 (April 19, 2018)
 - format the numbers on the monitor web page a little nicer to make for easier comparisons
 
