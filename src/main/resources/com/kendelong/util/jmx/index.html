@@ -90,8 +90,8 @@
 				<td>{{ cb.threshold }}</td>
 				<td>{{ cb.recovery }}</td>
 				<td>{{ cb.lastTripTime }}</td>
-				<td>{{ cb.timeSinceLastTrip }}</td>
-				<td>{{ cb.timeToNextRetry }}</td>
+				<td>{{ cb.timeSinceLastTrip | number }}</td>
+				<td>{{ cb.timeToNextRetry | number }}</td>
 				<td><button type="button" class="btn btn-{{ cb.tripsClass }}">{{ cb.totalNumTrips }}</button></td>
 			</tr>
 			</tbody>
@@ -265,7 +265,14 @@
 								var rowList = [];
 								for(var i = 0; i < dataLength; i++) {
 									var m = data[i];
-									var t = $('<tr class="bg-info"><td>' + m.name + '</td><td>' + m.min + '</td><td>' + m.max + '</td><td>' + m.avg + '</td><td>' + m.rpm + '</td><td>' + m.ex +'</td><td>' + m.numAccess + '</td><td>' + m.cumulative + '</td></tr>');
+									var t = $('<tr class="bg-info"><td class="text-right">' + m.name 
+											+ '</td><td class="text-right">' + m.min.toLocaleString()
+											+ '</td><td class="text-right">' + m.max.toLocaleString()
+											+ '</td><td class="text-right">' + m.avg.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})
+											+ '</td><td class="text-right">' + m.rpm.toLocaleString('en-US', {minimumFractionDigits: 3, maximumFractionDigits: 3})
+											+ '</td><td class="text-right">' + m.ex.toLocaleString()
+											+ '</td><td class="text-right">' + m.numAccess.toLocaleString()
+											+ '</td><td class="text-right">' + m.cumulative.toLocaleString() + '</td></tr>');
 									rowList.push(t);
 								}
 								row.child( rowList ).show();
