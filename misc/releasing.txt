@@ -37,6 +37,9 @@ Moving keys from one machine to another: https://unix.stackexchange.com/question
 	   gpg --import private.key
 	   gpg --edit-key {keyId} trust quit
 	   		answer 5, y
+	   without this last step, you have to enter the passphrase when you use the key
+	   gpg --list-keys
+	   		key should have "ultimate" power now
 
 In Maven settings.xml, in servers section:
 
