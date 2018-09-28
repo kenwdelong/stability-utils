@@ -27,6 +27,17 @@ http://central.sonatype.org/pages/releasing-the-deployment.html
 
 == Local Setup
 
+Get GPG here https://gpg4win.org/get-gpg4win.html
+Moving keys from one machine to another: https://unix.stackexchange.com/questions/184947/how-to-import-secret-gpg-key-copied-from-one-machine-to-another
+	On old machine: 
+	   gpg --export {keyId} > public.key
+	   gpg --export-secret-key {keyId} > private.key
+	On new machine:
+	   gpg --import public.key
+	   gpg --import private.key
+	   gpg --edit-key {keyId} trust quit
+	   		answer 5, y
+
 In Maven settings.xml, in servers section:
 
 		<!-- See http://datumedge.blogspot.com/2012/05/publishing-from-github-to-maven-central.html -->
