@@ -9,9 +9,12 @@
     <url>https://github.com/kenwdelong/stability-utils</url>
 
 	<properties>
-		<spring.version>5.0.5.RELEASE</spring.version>
+		<spring.version>5.0.9.RELEASE</spring.version>
 		<aspectj.version>1.8.13</aspectj.version>
 		<groovy.version>2.4.15</groovy.version>
+		<java.version>1.8</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
 
 	<dependencies>
@@ -81,19 +84,9 @@
 		<!-- Putting the versions here explicitly because they are not always in sync -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.5.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpmime</artifactId>
-			<version>4.5.5</version>
+			<version>4.5.6</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpcore</artifactId>
-			<version>4.4.9</version>
-		</dependency>		
 		
 		<!-- ==================== LOGGING ======================= -->
 		
@@ -148,30 +141,69 @@
 
 	<build>
 		<plugins>
+<!-- 			<plugin> -->
+<!-- 				<artifactId>maven-compiler-plugin</artifactId> -->
+<!-- 				2.8.0-01 and later require maven-compiler-plugin 3.1 or higher -->
+<!-- 				<version>3.6.1</version> -->
+<!-- 				<configuration> -->
+<!-- 					<compilerId>groovy-eclipse-compiler</compilerId> -->
+<!-- 					<source>1.8</source> -->
+<!-- 					<target>1.8</target> -->
+<!-- 				</configuration> -->
+<!-- 				<dependencies> -->
+<!-- 					<dependency> -->
+<!-- 						<groupId>org.codehaus.groovy</groupId> -->
+<!-- 						<artifactId>groovy-eclipse-compiler</artifactId> -->
+<!-- 						<version>2.9.2-04</version> -->
+<!-- 					</dependency> -->
+<!-- 					for 2.8.0-01 and later you must have an explicit dependency on --> 
+<!-- 						groovy-eclipse-batch -->
+<!-- 					<dependency> -->
+<!-- 						<groupId>org.codehaus.groovy</groupId> -->
+<!-- 						<artifactId>groovy-eclipse-batch</artifactId> -->
+<!-- 						<version>2.4.13-02</version> -->
+<!-- 					</dependency> -->
+<!-- 				</dependencies> -->
+<!-- 			</plugin> -->
 			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<!-- 2.8.0-01 and later require maven-compiler-plugin 3.1 or higher -->
-				<version>3.6.1</version>
+				<groupId>org.codehaus.gmavenplus</groupId>
+				<artifactId>gmavenplus-plugin</artifactId>
+				<version>1.6.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>addSources</goal>
+							<goal>addTestSources</goal>
+							<goal>generateStubs</goal>
+							<goal>compile</goal>
+							<goal>generateTestStubs</goal>
+							<goal>compileTests</goal>
+							<goal>removeStubs</goal>
+							<goal>removeTestStubs</goal>
+						</goals>
+					</execution>
+				</executions>
 				<configuration>
-					<compilerId>groovy-eclipse-compiler</compilerId>
-					<source>1.8</source>
-					<target>1.8</target>
+					<sources>
+						<source>
+							<directory>${project.basedir}/src/main/java</directory>
+							<includes>
+								<include>**/*.groovy</include>
+							</includes>
+						</source>
+					</sources>
+					<testSources>
+						<testSource>
+							<directory>${project.basedir}/src/test/java</directory>
+							<includes>
+								<include>**/*.groovy</include>
+							</includes>
+						</testSource>
+					</testSources>
+					<invokeDynamic>true</invokeDynamic>
 				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>org.codehaus.groovy</groupId>
-						<artifactId>groovy-eclipse-compiler</artifactId>
-						<version>2.9.2-04</version>
-					</dependency>
-					<!-- for 2.8.0-01 and later you must have an explicit dependency on 
-						groovy-eclipse-batch -->
-					<dependency>
-						<groupId>org.codehaus.groovy</groupId>
-						<artifactId>groovy-eclipse-batch</artifactId>
-						<version>2.4.13-02</version>
-					</dependency>
-				</dependencies>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
