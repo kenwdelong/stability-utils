@@ -87,18 +87,18 @@ public class PooledHttpClientStrategyAdmin
     }
 
     
-    @ManagedAttribute(description="If this is true, the connection manager will send a ping over the connection "
-    	 + "before handing it out to the client.  This assures the remote socket has not been closed by the server "
+    @ManagedAttribute(description="If this is greater than zero, the connection manager will send a ping over the connection "
+    	 + "before handing it out to the client if this connection has been idle for this amount of time.  This assures the remote socket has not been closed by the server "
     	 + "or a firewall, but adds 10-30ms to every request.")
-	public boolean isStaleConnectionCheck()
+	public int getValidateAfterInactivityMs()
 	{
-		return pooledStrategy.isStaleConnectionCheck();
+		return pooledStrategy.getValidateAfterInactivityMs();
 	}
 
     @ManagedAttribute
-	public void setStaleConnectionCheck(boolean staleConnectionCheck)
+	public void setValidateAfterInactivityMs(int staleConnectionCheck)
 	{
-		pooledStrategy.setStaleConnectionCheck(staleConnectionCheck);
+		pooledStrategy.setValidateAfterInactivityMs(staleConnectionCheck);
 	}
     
     @ManagedAttribute 

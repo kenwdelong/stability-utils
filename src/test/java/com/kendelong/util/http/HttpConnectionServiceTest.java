@@ -6,34 +6,24 @@ import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class HttpConnectionServiceTest
 {
 
 	@Test
-	@Ignore
 	public void testConnectionsAreAvailable() throws Exception
 	{
-//		<bean class="com.kendelong.util.http.HttpConnectionService">
-//		<property name="httpClientStrategy" ref="pooledHttpStrategy"/>
-//	</bean>
-//	
-//	<bean id="pooledHttpStrategy" class="com.kendelong.util.http.PooledHttpClientStrategy">
-//		<property name="connectionTimeoutInMs" value="100"/>
-//		<property name="socketTimeoutInMs" value="6000"/>
-//		<property name="retrieveConnectionTimeoutInMs" value="1000"/>
-//		<property name="maxConnectionsPerHost" value="2"/>
-//		<property name="maxTotalConnections" value="6"/>
-//	</bean>
-
 		PooledHttpClientStrategy strat = new PooledHttpClientStrategy();
 		strat.setConnectionTimeoutInMs(100);
 		strat.setSocketTimeoutInMs(6000);
 		strat.setRetrieveConnectionTimeoutInMs(1000);
 		strat.setMaxConnectionsPerHost(2);
 		strat.setMaxTotalConnections(6);
+		strat.afterPropertiesSet();
 		
 		HttpConnectionService svc = new HttpConnectionService();
 		svc.setHttpClientStrategy(strat);
+		
 		
 		Map<String, String> params = new HashMap<>();
 		params.put("q", "dog");
@@ -45,7 +35,31 @@ public class HttpConnectionServiceTest
 	}
 	
 	@Test
-	@Ignore
+	public void givenLenientSSL_itConnectsToAnIp() throws Exception
+	{
+		PooledHttpClientStrategy strat = new PooledHttpClientStrategy();
+		strat.setConnectionTimeoutInMs(100);
+		strat.setSocketTimeoutInMs(6000);
+		strat.setRetrieveConnectionTimeoutInMs(1000);
+		strat.setMaxConnectionsPerHost(2);
+		strat.setMaxTotalConnections(6);
+		strat.setAllowAllSsl(true);
+		strat.afterPropertiesSet();
+		
+		HttpConnectionService svc = new HttpConnectionService();
+		svc.setHttpClientStrategy(strat);
+		
+		HttpRequest request = new HttpRequest()
+				// You might need to change this address - find an https site and use its IP (or AWS ELB A record)
+				.withUrl("https://216.58.195.68:443")
+				.withMethod(HttpMethod.GET)
+				;
+
+		HttpResponseObject response = svc.sendGenericRequest(request);
+		System.out.println(response.getBody());
+	}
+	
+	@Test
 	// https://stackoverflow.com/questions/5725430/http-test-server-that-accepts-get-post-calls
 	public void testGenericRequest() throws Exception
 	{

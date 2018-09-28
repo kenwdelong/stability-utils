@@ -17,7 +17,17 @@ This artifact is available on Maven Central.
 
 ## Releases
 ### HEAD
-- update dependencies to be congruent to Spring Boot 2.0.1
+- TBD
+
+### 1.7.0 (Sept. 27, 2018)
+- Update dependencies to be like Spring Boot 2.0.5
+    - Update to httpclient 4.5.6
+    - Update to Spring 5.0.9
+- Change Groovy compilation to use GMaven instead of Groovy Eclipse Compiler
+- Remove deprecated methods from `HttpConnectionService`
+    - Change the lenient SSL factory implementation
+    - Change to the new stale connection check method (note: this might be a breaking change if you set this manually, see `validateAfterInactivityMs` in `PooledHttpClientStrategy` and [Commons Httpclient docs](https://hc.apache.org/httpcomponents-client-ga/httpclient/apidocs/org/apache/http/impl/conn/PoolingHttpClientConnectionManager.html#getValidateAfterInactivity())
+- Remove the `soLinger` setting in `HttpConnectionService` - I don't think it's a good idea to set it the way it was. 
 
 ### 1.6.1 (April 19, 2018)
 - format the numbers on the monitor web page a little nicer to make for easier comparisons

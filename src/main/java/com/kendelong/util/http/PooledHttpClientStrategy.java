@@ -2,6 +2,9 @@ package com.kendelong.util.http;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -13,12 +16,13 @@ import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.pool.PoolStats;
+import org.apache.http.ssl.SSLContexts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -48,11 +52,13 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 	// retrieveConnectionTimeout is how long in ms the client will wait for the connection manager to deliver a connection
 	private volatile int retrieveConnectionTimeoutInMs = 500;
 	
-	private volatile boolean staleConnectionCheck = true;	
 	// enables a scheduled cleaning sweep of our connections
     private volatile boolean connectionCleaningEnabled = true;
     // timeout value used for scheduled cleansing of unused connections (measured in seconds)
     private volatile int idleConnectionTimeoutInSeconds = 30;
+    
+    // How long a connection must be invalid before a stale connection check is issued by the pool manager before leasing. Negative value disables check.
+    private volatile int validateAfterInactivityMs = 1000;
     
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
@@ -71,10 +77,18 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 		PoolingHttpClientConnectionManager cm;
 		if(allowAllSsl)
 		{
-			Registry<ConnectionSocketFactory> r = RegistryBuilder.<ConnectionSocketFactory>create()
-			        .register("https", getLenientSslSocketFactory())
-			        .build();
-			cm = new PoolingHttpClientConnectionManager(r);
+			try
+			{
+				Registry<ConnectionSocketFactory> r = RegistryBuilder.<ConnectionSocketFactory>create()
+				        .register("https", getLenientSslSocketFactory())
+				        .build();
+				cm = new PoolingHttpClientConnectionManager(r);
+			}
+			catch(KeyManagementException | NoSuchAlgorithmException | KeyStoreException e)
+			{
+				logger.error("Could not create lenient socket factory", e);
+				cm = new PoolingHttpClientConnectionManager();
+			}
 		}
 		else
 		{
@@ -83,6 +97,7 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 		
 		cm.setMaxTotal(maxTotalConnections);
 		cm.setDefaultMaxPerRoute(maxConnectionsPerHost);
+		cm.setValidateAfterInactivity(validateAfterInactivityMs);
 		ConnectionConfig connectionConfig = ConnectionConfig.custom()
 				.setCharset(Charset.forName("UTF-8"))
 	            .build();
@@ -90,7 +105,6 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
         SocketConfig socketConfig = SocketConfig.custom()
                 .setTcpNoDelay(true)
                 .setSoTimeout(socketTimeoutInMs)
-                .setSoLinger(socketTimeoutInMs + 500)
                 .build();
         cm.setDefaultSocketConfig(socketConfig);
         setConnectionManager(cm);
@@ -106,7 +120,6 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 				.setConnectTimeout(connectionTimeoutInMs)
 				.setConnectionRequestTimeout(retrieveConnectionTimeoutInMs)
 				.setSocketTimeout(socketTimeoutInMs)
-				.setStaleConnectionCheckEnabled(staleConnectionCheck)
 				.build();
 		CloseableHttpClient client = HttpClientBuilder.create()
 				.setDefaultRequestConfig(config)
@@ -160,12 +173,12 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 		}
 	}
 	
-	private SSLConnectionSocketFactory getLenientSslSocketFactory()
+	private SSLConnectionSocketFactory getLenientSslSocketFactory() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException
 	{
 	    SSLContext sslContext = SSLContexts.createSystemDefault();
 	    SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
 	            sslContext,
-	            SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+	            NoopHostnameVerifier.INSTANCE);
 	    return sslsf;
 	}
 
@@ -243,16 +256,6 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 		this.retrieveConnectionTimeoutInMs = retrieveConnectionTimeout;
 	}
 
-	public boolean isStaleConnectionCheck()
-	{
-		return staleConnectionCheck;
-	}
-
-	public void setStaleConnectionCheck(boolean staleConnectionCheck)
-	{
-		this.staleConnectionCheck = staleConnectionCheck;
-	}
-
 	public boolean isConnectionCleaningEnabled()
 	{
 		return connectionCleaningEnabled;
@@ -288,6 +291,16 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 		return getConnectionManager().getTotalStats();
 	}
 
+	public int getValidateAfterInactivityMs()
+	{
+		return validateAfterInactivityMs;
+	}
+
+	public void setValidateAfterInactivityMs(int validateAfterInactivityMs)
+	{
+		this.validateAfterInactivityMs = validateAfterInactivityMs;
+	}
+	
 	@Override
 	public void destroy()
 	{
@@ -301,4 +314,5 @@ public class PooledHttpClientStrategy implements IHttpClientStrategy,Initializin
 			getConnectionManager().close();
 		}
 	}
+
 }
