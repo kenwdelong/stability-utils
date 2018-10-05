@@ -12,12 +12,15 @@ This artifact is available on Maven Central.
 	<dependency>
 	    <groupId>com.github.kenwdelong</groupId>
 	    <artifactId>stability-utils</artifactId>
-	    <version>1.7.0</version>
+	    <version>1.7.1</version>
 	</dependency>
 
 ## Releases
 ### HEAD
 - TBD
+
+### 1.7.1 (Oct. 5, 2018)
+- Update `HttpConnectionService` to handle a null Entity in the response
 
 ### 1.7.0 (Sept. 27, 2018)
 - Update dependencies to be like Spring Boot 2.0.5

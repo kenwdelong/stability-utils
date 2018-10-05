@@ -263,11 +263,17 @@ public class HttpConnectionService implements IHttpConnectionService
 		{
 			HttpResponseObject responseObject = new HttpResponseObject();
 
+			String body = null;
+			long length = 0;
+			String encoding = null;
 			HttpEntity entity = response.getEntity();
-			String body = EntityUtils.toString(entity, ENCODING);
-			long length = (entity != null ? entity.getContentLength() : 0);
-			Header contentType = (entity != null ? entity.getContentType() : null);
-			String encoding = (contentType != null ? contentType.getValue() : ENCODING);
+			if(entity != null)
+			{
+				body = EntityUtils.toString(entity, ENCODING);
+				length = entity.getContentLength();
+				Header contentType = entity.getContentType();
+				encoding = (contentType != null ? contentType.getValue() : ENCODING);
+			}
 
 			responseObject.setBody(body);
 			responseObject.setHeaders(response.getAllHeaders());
@@ -278,7 +284,7 @@ public class HttpConnectionService implements IHttpConnectionService
 			if(logger.isDebugEnabled())
 			{
 				logger.debug("Received reponse from remote server."
-								+ "  Use logger httpclient.wire.content=DEBUG to see it."
+								+ "  Use logger org.apache.http.wire=DEBUG to see it."
 								+ "  Response was [" + responseObject.getLength()
 								+ "] characters long; encoding was [" + encoding +"]");
 				logger.trace(responseObject.getBody());
