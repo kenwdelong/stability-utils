@@ -12,12 +12,15 @@ This artifact is available on Maven Central.
 	<dependency>
 	    <groupId>com.github.kenwdelong</groupId>
 	    <artifactId>stability-utils</artifactId>
-	    <version>1.7.1</version>
+	    <version>1.7.2</version>
 	</dependency>
 
 ## Releases
 ### HEAD
 - TBD
+
+### 1.7.2 (Oct. 8, 2018)
+- Fix bug where, on the monitor page, the non-performance MBeans (CircuitBreakers, RetryInterceptors, and ConcurrencyThrottles) were not visible if the bean was marked as `@WebServiceEndpoint` or `@WebServiceClient`. Only the Performance Monitor MBeans are treated specially on this page. 
 
 ### 1.7.1 (Oct. 5, 2018)
 - Update `HttpConnectionService` to handle a null Entity in the response
