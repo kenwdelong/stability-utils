@@ -19,7 +19,8 @@ public class MbeanDataRetriever
 	@Value('${stability.baseDomain}')
 	private String baseDomain
 	
-	private def perfDomains = ['performance', 'webservice.client.performance', 'webservice.endpoint.performance']
+	private def prefixes = ['', 'webservice.client.', 'webservice.endpoint.']
+	private def perfDomains = prefixes.collect { it + 'performance' }
 	
 	@Autowired
 	private MBeanServer mbeanServer
@@ -32,9 +33,9 @@ public class MbeanDataRetriever
 			def performance = getPerformanceMbeans("${baseDomain}.${domain}:*", { key, value -> !key.contains('.') })
 			result[domain] = performance
 		}
-		result['circuitBreakers'] = getCircuitBreakerMbeans("${baseDomain}.circuitbreaker:*")
-		result['concurrencyThrottles'] = getConcurrencyThrottleMbeans("${baseDomain}.concurrencyThrottle:*")
-		result['retries'] = getRetryMbeans("${baseDomain}.retriedOperations:*")
+		result['circuitBreakers'] = prefixes.collect { prefix -> getCircuitBreakerMbeans("${baseDomain}.${prefix}circuitbreaker:*")}.flatten()
+		result['concurrencyThrottles'] = prefixes.collect { prefix -> getConcurrencyThrottleMbeans("${baseDomain}.${prefix}concurrencyThrottle:*")}.flatten()
+		result['retries'] = prefixes.collect { prefix -> getRetryMbeans("${baseDomain}.${prefix}retriedOperations:*")}.flatten()
 
 		return result
 	}
