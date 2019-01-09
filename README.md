@@ -19,6 +19,9 @@ This artifact is available on Maven Central.
 ### HEAD
 - TBD
 
+### 1.7.3 (Jan. 8, 2019)
+- Fix bug where, when lenient SSL was used, HTTP requests were no longer supported. 
+
 ### 1.7.2 (Oct. 8, 2018)
 - Fix bug where, on the monitor page, the non-performance MBeans (CircuitBreakers, RetryInterceptors, and ConcurrencyThrottles) were not visible if the bean was marked as `@WebServiceEndpoint` or `@WebServiceClient`. Only the Performance Monitor MBeans are treated specially on this page. 
 
