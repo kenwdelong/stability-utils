@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.kenwdelong</groupId>
 	<artifactId>stability-utils</artifactId>
-	<version>1.7.3</version>
+	<version>1.7.4-SNAPSHOT</version>
     <name>Stability Utils</name>
     <description>A Spring-based library for utilities useful for keeping high-volume sites up and running.  Based partially on the 
                  book "Release It" by Michael Nygard.</description>
@@ -274,7 +274,7 @@
 		<connection>scm:git:git@github.com:kenwdelong/stability-utils.git</connection>
 		<url>scm:git:git@github.com:kenwdelong/stability-utils.git</url>
 		<developerConnection>scm:git:git@github.com:kenwdelong/stability-utils.git</developerConnection>
-	    <tag>stability-utils-1.7.3</tag>
+	    <tag>HEAD</tag>
     </scm>
 
 	<licenses>
