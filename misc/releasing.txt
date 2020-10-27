@@ -2,15 +2,20 @@
 
 mvn release:prepare
 mvn release:perform
+
+NO LONGER NECESSARY
 Log into Sonatype Nexus and find your artifacts under Staging Repositories
 Close, then release the artifacts.
+
 Watch for it in https://repo1.maven.org/maven2/com/github/kenwdelong/stability-utils/
 
+== DELETING TAGS 
 If you need to undo the release, revert the changes with 
 git reset --hard HEAD~2
 git tag -d stability-utils-1.7.5
 git push origin :refs/tags/stability-utils-1.7.5
 
+== DOCS
 -- Articles on publishing to Maven Central
 
 http://datumedge.blogspot.com/2012/05/publishing-from-github-to-maven-central.html
