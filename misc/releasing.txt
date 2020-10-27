@@ -23,6 +23,9 @@ http://blog.sonatype.com/2009/09/maven-tips-and-tricks-using-github/#.VGWHifnF98
 
 http://central.sonatype.org/pages/releasing-the-deployment.html
 
+https://central.sonatype.org/pages/apache-maven.html#gpg-signed-components
+
+
 == Local Setup
 
 Get GPG here https://gpg4win.org/get-gpg4win.html
