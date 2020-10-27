@@ -12,12 +12,20 @@ This artifact is available on Maven Central.
 	<dependency>
 	    <groupId>com.github.kenwdelong</groupId>
 	    <artifactId>stability-utils</artifactId>
-	    <version>1.7.3</version>
+	    <version>1.7.4</version>
 	</dependency>
 
 ## Releases
 ### HEAD
 - TBD
+
+### 1.7.4 (Oct. 27, 2020)
+- Update dependencies to match Spring Boot 2.3.4
+    - Spring 5.2.9
+    - Groovy 2.5.13
+    - Httpclient 4.5.12
+- Update to GMavenPlus 1.10.1    
+- Change project to compile with Java 11
 
 ### 1.7.3 (Jan. 8, 2019)
 - Fix bug where, when lenient SSL was used, HTTP requests were no longer supported. 

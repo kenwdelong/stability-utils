@@ -9,8 +9,6 @@ import org.aspectj.runtime.internal.AroundClosure;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.kendelong.util.retry.RetryInterceptor;
-
 
 public class ConcurrentOperationRetryInterceptorTest
 {

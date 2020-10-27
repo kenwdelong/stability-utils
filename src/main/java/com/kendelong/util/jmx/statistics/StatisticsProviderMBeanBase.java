@@ -3,7 +3,6 @@ package com.kendelong.util.jmx.statistics;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
 
@@ -82,7 +81,6 @@ public class StatisticsProviderMBeanBase implements IStatisticsProvider
 		return provider;
 	}
 
-	@Required
 	public void setProvider(IStatisticsProvider provider)
 	{
 		this.provider = provider;
