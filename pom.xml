@@ -225,7 +225,7 @@
 				<version>3.0.0-M1</version>
 				<configuration>
 					<arguments>-Dgpg.passphrase="${gpg.passphrase}"</arguments>
-					<releaseProfiles>release</releaseProfiles>
+					<releaseProfiles>sign-artifacts-during-release</releaseProfiles>
 				</configuration>
 			</plugin>
 
