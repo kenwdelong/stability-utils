@@ -225,24 +225,11 @@
 				<version>3.0.0-M1</version>
 				<configuration>
 					<arguments>-Dgpg.passphrase="${gpg.passphrase}"</arguments>
+					<releaseProfiles>release</releaseProfiles>
 				</configuration>
 			</plugin>
 
 			<!--  https://central.sonatype.org/pages/apache-maven.html#gpg-signed-components -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.6</version>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -310,7 +297,7 @@
 
 	<profiles>
 		<profile>
-			<id>release-sign-artifacts</id>
+			<id>sign-artifacts-during-release</id>
 			<activation>
 				<property>
 					<name>performRelease</name>
