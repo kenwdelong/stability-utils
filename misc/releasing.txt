@@ -8,10 +8,8 @@ Watch for it in https://repo1.maven.org/maven2/com/github/kenwdelong/stability-u
 
 If you need to undo the release, revert the changes with 
 git reset --hard HEAD~2
-and delete the tag with 
-git tag -d redis-launcher-0.1
-followed by 
-git push origin :refs/tags/redis-launcher-0.1.
+git tag -d stability-utils-1.7.5
+git push origin :refs/tags/stability-utils-1.7.5
 
 -- Articles on publishing to Maven Central
 
