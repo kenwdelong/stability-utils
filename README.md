@@ -12,14 +12,18 @@ This artifact is available on Maven Central.
 	<dependency>
 	    <groupId>com.github.kenwdelong</groupId>
 	    <artifactId>stability-utils</artifactId>
-	    <version>1.7.4</version>
+	    <version>1.7.5</version>
 	</dependency>
 
 ## Releases
 ### HEAD
 - TBD
 
+### 1.7.5 (Oct. 27, 2020)
+- Re-release
+
 ### 1.7.4 (Oct. 27, 2020)
+- Botched release
 - Update dependencies to match Spring Boot 2.3.4
     - Spring 5.2.9
     - Groovy 2.5.13
