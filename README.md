@@ -12,12 +12,15 @@ This artifact is available on Maven Central.
 	<dependency>
 	    <groupId>com.github.kenwdelong</groupId>
 	    <artifactId>stability-utils</artifactId>
-	    <version>1.7.5</version>
+	    <version>1.7.6</version>
 	</dependency>
 
 ## Releases
 ### HEAD
 - TBD
+
+### 1.7.6 (Feb. 4, 2021)
+- Include the date on the circuit breaker time of last trip
 
 ### 1.7.5 (Oct. 27, 2020)
 - Re-release
