@@ -220,7 +220,7 @@ public class CircuitBreakerAspect implements Ordered
 		Date time = timeOfLastTrip.get();
 		if(time != null)
 		{
-			DateFormat df = DateFormat.getTimeInstance(DateFormat.FULL);
+			DateFormat df = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.FULL);
 			return df.format(time);
 		}
 		else
