@@ -2,10 +2,13 @@
 
 mvn release:prepare
 mvn release:perform
+NOTE: I had to update the settings file with the full path to GPG to make it work for 1.7.6
 
 NO LONGER NECESSARY
+---
 Log into Sonatype Nexus and find your artifacts under Staging Repositories
 Close, then release the artifacts.
+---
 
 Watch for it in https://repo1.maven.org/maven2/com/github/kenwdelong/stability-utils/
 
