@@ -9,7 +9,7 @@
     <url>https://github.com/kenwdelong/stability-utils</url>
 
 	<properties>
-		<spring.version>5.2.9.RELEASE</spring.version>
+		<spring.version>5.3.14</spring.version>
 		<aspectj.version>1.9.6</aspectj.version>
 		<groovy.version>2.5.13</groovy.version>
 		<java.version>11</java.version>
