@@ -52,7 +52,7 @@ public class MbeanDataRetriever
 		Set<ObjectInstance> objectInstances = mbeanServer.queryMBeans(domainOname, null)
 		def data = objectInstances.collect {
 			ObjectInstance objectInstance ->
-			ObjectName oname = objectInstance.name
+			ObjectName oname = objectInstance.objectName
 			Map<String, PerformanceMonitor> monitors = mbeanServer.getAttribute(oname, 'Monitors')?.findAll { key, value -> filter(key, value) }
 			if(!monitors) return
 			def datalist = monitors.collect {
@@ -80,7 +80,7 @@ public class MbeanDataRetriever
 		Set<ObjectInstance> objectInstances = mbeanServer.queryMBeans(domainOname, null)
 		def data = objectInstances.collect {
 			ObjectInstance objectInstance ->
-			ObjectName oname = objectInstance.name
+			ObjectName oname = objectInstance.objectName
 			def myData = [:]
 			myData['name'] = oname.getKeyProperty('bean')
 			myData['oname'] = oname.toString()
@@ -103,7 +103,7 @@ public class MbeanDataRetriever
 		Set<ObjectInstance> objectInstances = mbeanServer.queryMBeans(domainOname, null)
 		def data = objectInstances.collect {
 			ObjectInstance objectInstance ->
-			ObjectName oname = objectInstance.name
+			ObjectName oname = objectInstance.objectName
 			def myData = [:]
 			myData['name'] = oname.getKeyProperty('bean')
 			myData['oname'] = oname.toString()
@@ -121,7 +121,7 @@ public class MbeanDataRetriever
 		Set<ObjectInstance> objectInstances = mbeanServer.queryMBeans(domainOname, null)
 		def data = objectInstances.collect {
 			ObjectInstance objectInstance ->
-			ObjectName oname = objectInstance.name
+			ObjectName oname = objectInstance.objectName
 			def myData = [:]
 			myData['name'] = oname.getKeyProperty('bean')
 			myData['oname'] = oname.toString()
