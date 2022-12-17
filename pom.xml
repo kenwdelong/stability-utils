@@ -262,8 +262,8 @@
 		<pluginRepository>
 			<id>bintray</id>
 			<name>Groovy Bintray</name>
-			<!-- <url>https://dl.bintray.com/groovy/maven</url> -->
-			<url>http://localhost:8891/content/groups/public</url>
+			<url>https://dl.bintray.com/groovy/maven</url>
+			<!-- <url>http://localhost:8891/content/groups/public</url> -->
 			<releases>
 				<updatePolicy>never</updatePolicy>
 			</releases>

@@ -12,12 +12,20 @@ This artifact is available on Maven Central.
 	<dependency>
 	    <groupId>com.github.kenwdelong</groupId>
 	    <artifactId>stability-utils</artifactId>
-	    <version>1.7.6</version>
+	    <version>2.0.0</version>
 	</dependency>
 
 ## Releases
 ### HEAD
 - TBD
+
+### 2.0.0 (Dec. 16, 2022)
+- Update to Java 17
+- Update dependencies to match Spring Boot 2.7.4
+    - Spring 5.3.23
+    - Groovy 3.0.13
+    - Httpclient 4.5.13
+- Update to GmavenPlus 2.1.0
 
 ### 1.7.6 (Feb. 4, 2021)
 - Include the date on the circuit breaker time of last trip
