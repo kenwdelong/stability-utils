@@ -44,5 +44,15 @@ public class LogbackGraphiteAppender extends AppenderBase<ILoggingEvent>
 	{
 		graphiteClient = gc;
 	}
+	
+	@Override
+	public void stop()
+	{
+		super.stop();
+		if(graphiteClient != null)
+		{
+			graphiteClient.stop();
+		}
+	}
 
 }

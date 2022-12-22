@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,15 @@ public class GraphiteClient
 		{
 			logger.error("Unable to open connection to statsd at [" + statsdHost + ":" + statsdPort + "]; using NoOp client.");
 			statsdClient = new NoOpStatsDClient();
+		}
+	}
+	
+	@PreDestroy
+	public void stop()
+	{
+		if(statsdClient != null)
+		{
+			statsdClient.stop();
 		}
 	}
 
