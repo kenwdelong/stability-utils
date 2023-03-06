@@ -9,5 +9,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface RetryableOperation
 {
+	int msToFirstRetry() default 100;
+	
+	int maxRetries() default 2;
 
 }

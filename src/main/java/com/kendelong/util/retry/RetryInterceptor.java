@@ -57,7 +57,10 @@ import com.kendelong.util.monitoring.graphite.GraphiteClient;
 @Order(200)
 public class RetryInterceptor implements Ordered
 {
+	// These are really read-only for JMX
 	private final AtomicInteger maxRetries = new AtomicInteger(2);
+	private final AtomicInteger retryBaseDelayInMs = new AtomicInteger(100);
+
 	private int order = 1;
 	private List<Class<? extends Exception>> exceptionClassesToRetry = new ArrayList<Class<? extends Exception>>();
 	
@@ -69,13 +72,16 @@ public class RetryInterceptor implements Ordered
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	private int retryBaseDelayInMs = 100;
 	
 	private GraphiteClient graphiteClient;
 
-	@Around("@annotation(com.kendelong.util.retry.RetryableOperation)")
-	public Object doConcurrentOperation(ProceedingJoinPoint pjp) throws Throwable
+	@Around("@annotation(ann)")
+	public Object doConcurrentOperation(ProceedingJoinPoint pjp, RetryableOperation ann) throws Throwable
 	{
+		// Set these for JMX reads
+		retryBaseDelayInMs.set(ann.msToFirstRetry());
+		maxRetries.set(ann.maxRetries());
+		
 		String key = null;
 		if(graphiteClient != null)
 		{
@@ -93,7 +99,7 @@ public class RetryInterceptor implements Ordered
 			if(numAttempts > 0)
 			{
 				// It's a retry; log it
-				int sleepDelay = retryBaseDelayInMs*numAttempts;
+				int sleepDelay = ann.msToFirstRetry()*numAttempts;
 				logger.info("Sleeping [{}] ms before retrying invocation [{}]; attempt [{}]", sleepDelay, key, numAttempts);
 				Thread.sleep(sleepDelay);
 				retriedOperations.incrementAndGet();
@@ -119,7 +125,7 @@ public class RetryInterceptor implements Ordered
 				logger.warn("Exception [" + e.getMessage() + "] caught, attempt number [" + numAttempts + "]");
 				logConcurrencyFailure(pjp);
 			}
-		} while(numAttempts <= this.getMaxRetries());
+		} while(numAttempts <= ann.maxRetries());
 		
 		logger.warn("Max retries reached; rethrowing exception to client");
 		failedOperations.incrementAndGet();
@@ -137,11 +143,6 @@ public class RetryInterceptor implements Ordered
 			failedMethods.put(key, counter);
 		}
 		counter.incrementAndGet();
-	}
-
-	public void setMaxRetries(int maxRetries)
-	{
-		this.maxRetries.set(maxRetries);
 	}
 
 	@Override
@@ -228,12 +229,7 @@ public class RetryInterceptor implements Ordered
 	@ManagedAttribute(description="The base delay in ms used in retries")
 	public int getRetryBaseDelayInMs()
 	{
-		return retryBaseDelayInMs;
-	}
-
-	public void setRetryBaseDelayInMs(int retryBaseIntervalInMs)
-	{
-		this.retryBaseDelayInMs = retryBaseIntervalInMs;
+		return retryBaseDelayInMs.get();
 	}
 
 }
