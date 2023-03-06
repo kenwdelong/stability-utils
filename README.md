@@ -19,6 +19,9 @@ This artifact is available on Maven Central.
 ### HEAD
 - TBD
 
+### 2.1.0 (March 6, 2023)
+- Update retry interceptor to parameterize the annotation with the delay time and max attempts
+
 ### 2.0.1 (Dec. 16, 2022)
 - Remove Log4j support (`GraphiteAppender` and `LogConfigurer` - LMK if you want it back)
 - Put `stop()` methods on the `LogbackGraphiteAppender` and `GraphiteClient` to stop the `NonBlockingStatsDClient` (it has a thread)
