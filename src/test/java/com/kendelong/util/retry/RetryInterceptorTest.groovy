@@ -9,7 +9,6 @@ import org.aspectj.runtime.internal.AroundClosure;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class RetryInterceptorTest
 {
 	private RetryInterceptor interceptor;
@@ -21,7 +20,7 @@ public class RetryInterceptorTest
 	{
 		interceptor = new RetryInterceptor();
 		pjp = getJoinpoint();
-		ann = [msToFirstRetry: { 100 }, maxRetries: { 2 }] as RetryableOperation
+		ann = [msToFirstRetry: { 100 }, maxRetries: { 2 }, annotationType: { RetryableOperation.class }] as RetryableOperation
 	}
 
 	@Test
@@ -75,7 +74,7 @@ public class RetryInterceptorTest
 		return new MyPJP();
 	}
 	
-	class MyPJP extends ProceedingJoinPoint
+	class MyPJP implements ProceedingJoinPoint
 	{
 		@Override
 		public Object proceed() throws Throwable
@@ -150,7 +149,7 @@ public class RetryInterceptorTest
 		
 	};
 
-	class MySignature extends  Signature
+	class MySignature implements  Signature
 	{
 		
 		@Override
