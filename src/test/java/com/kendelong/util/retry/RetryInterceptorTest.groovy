@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class ConcurrentOperationRetryInterceptorTest
+public class RetryInterceptorTest
 {
 	private RetryInterceptor interceptor;
 	private ProceedingJoinPoint pjp;
@@ -54,7 +54,6 @@ public class ConcurrentOperationRetryInterceptorTest
 		assertEquals(1, interceptor.getNumberOfAccesses());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testThrowsExceptionWithClassForName() throws ClassNotFoundException
 	{
