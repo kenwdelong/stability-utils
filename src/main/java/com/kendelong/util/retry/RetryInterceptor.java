@@ -117,6 +117,10 @@ public class RetryInterceptor implements Ordered
 				// throw the exceptions to the client and stop counting
 				if(!exceptionClassesToRetry.contains(e.getClass()))
 				{
+					if(logger.isDebugEnabled())
+					{
+						logger.debug("Exception [{}] is not in the whitelist", e.getClass());
+					}
 					throw e;
 				}
 				
