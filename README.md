@@ -12,12 +12,15 @@ This artifact is available on Maven Central.
 	<dependency>
 	    <groupId>com.github.kenwdelong</groupId>
 	    <artifactId>stability-utils</artifactId>
-	    <version>2.0.1</version>
+	    <version>2.1.1</version>
 	</dependency>
 
 ## Releases
 ### HEAD
 - TBD
+
+### 2.1.1 (May 19, 2023)
+- Update `GraphiteClient` so that you have the option of just using the first part of the hostname
 
 ### 2.1.0 (March 6, 2023)
 - Update retry interceptor to parameterize the annotation with the delay time and max attempts

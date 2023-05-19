@@ -23,6 +23,8 @@ public class GraphiteClient
 	
 	private String statsdHost;
 	private int statsdPort;
+	
+	private boolean stripDomain = false;
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -58,7 +60,14 @@ public class GraphiteClient
 		{
 		    InetAddress addr = InetAddress.getLocalHost();
 		    hostname = addr.getHostName();
-		    hostname = hostname.replaceAll("\\.", "-");
+		    if(!stripDomain)
+		    {
+		    	hostname = hostname.replaceAll("\\.", "-");
+		    }
+		    else
+		    {
+		    	hostname = hostname.split("\\.")[0];
+		    }
 		} 
 		catch (UnknownHostException e) 
 		{
@@ -175,5 +184,15 @@ public class GraphiteClient
 	public void setStatsdPort(int statsdPort)
 	{
 		this.statsdPort = statsdPort;
+	}
+
+	public boolean isStripDomain()
+	{
+		return stripDomain;
+	}
+
+	public void setStripDomain(boolean stripDomain)
+	{
+		this.stripDomain = stripDomain;
 	}
 }
