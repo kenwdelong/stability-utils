@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
 groovy.compiler.level=-1
 groovy.script.filters=src/main/resources/**/*.groovy,y,src/test/resources/**/*.groovy,y
+groovy.script.filters.enabled=false
 org.codehaus.groovy.eclipse.preferences.compiler.project=true

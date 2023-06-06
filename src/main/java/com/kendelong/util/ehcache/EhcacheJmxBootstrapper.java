@@ -1,13 +1,6 @@
 package com.kendelong.util.ehcache;
 
-import javax.annotation.PostConstruct;
 import javax.management.MBeanServer;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.management.ManagementService;
 
 
 /**
@@ -23,7 +16,7 @@ import net.sf.ehcache.management.ManagementService;
 // I think this could/should be a BeanFactoryPostProcessor
 public class EhcacheJmxBootstrapper
 {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	//private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	private MBeanServer mbeanServer;
 	private boolean registerManager = true;
@@ -31,16 +24,16 @@ public class EhcacheJmxBootstrapper
 	private boolean registerConfigurations = false;
 	private boolean registerStatistics = true;
 	
-	@PostConstruct
-	public void init()
-	{
-		// The CacheManager has a static List of all CM instances.
-		for(CacheManager cacheMgr : CacheManager.ALL_CACHE_MANAGERS)
-		{
-			ManagementService.registerMBeans(cacheMgr, mbeanServer, registerManager, registerCaches, registerConfigurations, registerStatistics);
-			logger.info("Registering EhCache CacheManager with MBean server " + cacheMgr.getName());
-		}
-	}
+//	@PostConstruct
+//	public void init()
+//	{
+//		// The CacheManager has a static List of all CM instances.
+//		for(CacheManager cacheMgr : CacheManager.ALL_CACHE_MANAGERS)
+//		{
+//			ManagementService.registerMBeans(cacheMgr, mbeanServer, registerManager, registerCaches, registerConfigurations, registerStatistics);
+//			logger.info("Registering EhCache CacheManager with MBean server " + cacheMgr.getName());
+//		}
+//	}
 
 	public MBeanServer getMbeanServer()
 	{

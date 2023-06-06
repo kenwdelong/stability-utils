@@ -17,7 +17,9 @@ This artifact is available on Maven Central.
 
 ## Releases
 ### HEAD
-- TBD
+- Update to Spring 6, which involves the package change from `javax.servlet` -> `jakarta.servlet`
+- Use the Spring Boot parent POM for dependency version management
+- Removal of EhCache JMX functionality (at least for now)
 
 ### 2.1.1 (May 19, 2023)
 - Update `GraphiteClient` so that you have the option of just using the first part of the hostname

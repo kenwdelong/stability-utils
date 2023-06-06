@@ -2,16 +2,22 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.kenwdelong</groupId>
 	<artifactId>stability-utils</artifactId>
-	<version>2.1.2-SNAPSHOT</version>
+	<version>3.0.0-SNAPSHOT</version>
     <name>Stability Utils</name>
     <description>A Spring-based library for utilities useful for keeping high-volume sites up and running.  Based partially on the 
                  book "Release It" by Michael Nygard.</description>
     <url>https://github.com/kenwdelong/stability-utils</url>
 
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.1.0</version>
+  </parent>
+
 	<properties>
-		<spring.version>5.3.23</spring.version>
-		<aspectj.version>1.9.7</aspectj.version>
-		<groovy.version>3.0.13</groovy.version>
+<!--		<spring.version>6.0.9</spring.version>-->
+<!--		<aspectj.version>1.9.19</aspectj.version>-->
+<!--		<groovy.version>4.0.12</groovy.version>-->
 		<java.version>17</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
@@ -21,32 +27,26 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
-			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
-			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
 		
@@ -54,24 +54,20 @@
 		<dependency>
 			<groupId>jakarta.annotation</groupId>
 			<artifactId>jakarta.annotation-api</artifactId>
-			<version>1.3.5</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.12.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
-			<version>${aspectj.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
-			<version>${aspectj.version}</version>
 		</dependency>
 
 		<dependency>
@@ -81,16 +77,14 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
+			<groupId>org.apache.groovy</groupId>
 			<artifactId>groovy-xml</artifactId>
-			<version>${groovy.version}</version>
-			<classifier>indy</classifier>
 		</dependency>
 		
 		<dependency>
-			<groupId>net.sf.ehcache</groupId>
+			<groupId>org.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
-			<version>2.10.9.2</version>
+			<version>${ehcache3.version}</version>
 		</dependency>
 		
 		<!-- HTTP stuff -->
@@ -106,20 +100,17 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.36</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
-			<version>1.7.36</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.2.11</version>
 		</dependency>
 		
 		<!-- ================== STATSD FOR GRAPHITE ======================= -->
@@ -134,7 +125,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -151,7 +141,7 @@
 			<plugin>
 				<groupId>org.codehaus.gmavenplus</groupId>
 				<artifactId>gmavenplus-plugin</artifactId>
-				<version>2.1.0</version>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<goals>
@@ -190,7 +180,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>3.2.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -203,7 +192,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.4.1</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -216,7 +204,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>3.0.0-M7</version>
+				<version>3.0.1</version>
 				<configuration>
 					<arguments>-Dgpg.passphrase="${gpg.passphrase}"</arguments>
 					<releaseProfiles>sign-artifacts-during-release</releaseProfiles>
@@ -303,7 +291,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>3.0.1</version>
+						<version>3.1.0</version>
 						<configuration>
 							<!-- Configured in settings.xml -->
 							<passphrase>${gpg.passphrase}</passphrase>
