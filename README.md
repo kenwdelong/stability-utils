@@ -12,11 +12,14 @@ This artifact is available on Maven Central.
 	<dependency>
 	    <groupId>com.github.kenwdelong</groupId>
 	    <artifactId>stability-utils</artifactId>
-	    <version>2.1.1</version>
+	    <version>3.0.0</version>
 	</dependency>
 
 ## Releases
 ### HEAD
+- TBD
+
+### 3.0.0 (June 27, 2023)
 - Update to Spring 6, which involves the package change from `javax.servlet` -> `jakarta.servlet`
 - Use the Spring Boot parent POM for dependency version management
 - Removal of EhCache JMX functionality (at least for now)
