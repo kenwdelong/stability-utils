@@ -19,6 +19,10 @@ This artifact is available on Maven Central.
 ### HEAD
 - TBD
 
+### 3.0.1 (Oct. 4, 2023)
+- Change the order on the AOP aspects (see below).
+- Update dependency version management to Spring Boot 3.1.4
+
 ### 3.0.0 (June 27, 2023)
 - Update to Spring 6, which involves the package change from `javax.servlet` -> `jakarta.servlet`
 - Use the Spring Boot parent POM for dependency version management
@@ -263,7 +267,7 @@ component will be shared across method calls.
 
 # Ordering of Aspects (introduced in 1.4.0)
 The ordering of the aspects in this library is important. As many of the aspects carry per-joinpoint state, they need to be instantiated as prototype
-scope in Spring. However, I just noticed that the order is not being respected for prototype aspect instances.  I've submitted a (bug)[https://jira.spring.io/browse/SPR-14959] with Spring.  Until that can get fixed, we need to take a different approach here.  In this case,
+scope in Spring. However, I (just noticed)[https://stackoverflow.com/questions/40768177/spring-aop-prototype-scoped-aspects-are-firing-out-of-order] that the order is not being respected for prototype aspect instances.  I've submitted a (bug)[https://jira.spring.io/browse/SPR-14959] with Spring.  Until that can get fixed, we need to take a different approach here.  In this case,
 the `@Order` annoation _is_ respected.  So I need to hard-code the order values into the annotations.  This is not ideal, as it might conflict
 with other order values in the including project. But there's not much else I can see to do at the moment.
 
@@ -278,6 +282,15 @@ After this, I suggest you set values on your own project as such:
 - MethodSecurityInterceptor: order = 600 (e.g., `<global-method-security pre-post-annotations="enabled" order="600">` in XML config) - my method security accesses the database to check permissions, I'd like that to run in the same transaction (and Hibernate session) as the actual operation.
 
 If/when the Spring bug is fixed, I will remove the hard-coded `@Order` annoations.
+
+## Update of Oct 4, 2023
+I changed the orders to 
+- RetryInterceptor (order=100) - clear out all the state below before retrying. Add `com.kendelong.util.concurrency.ConcurrencyLimitExceededException` if you want to retry threads that arrive in a crowd. _Do not_ add `com.kendelong.util.circuitbreaker.CircuitBreakerException` or you will possibly never reset your breakers!
+- ConcurrencyThrottle (order=150) - This guys aggressively throws exceptions after the thread limit is reached, causing problems in interaction with the other two interceptors.
+- CircuitBreaker (order=200) - Move this down, because you don't want concurrency exceptions triggering the breaker. Otherwise a storm of threads in _your_ code could trip it, but it's supposed to be watching for problems in the _remote_ system.
+- PerformanceMonitor (order=250) - same
+
+If this ordering is not what you want, I'm afraid there's no recourse except to fork the project and change the values in the `@Ordered` annotations.
 
 # Graphite Monitoring
 

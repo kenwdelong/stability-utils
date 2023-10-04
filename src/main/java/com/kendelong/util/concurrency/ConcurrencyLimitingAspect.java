@@ -6,7 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
@@ -41,8 +40,8 @@ import com.kendelong.util.monitoring.graphite.GraphiteClient;
  */
 @Aspect
 @ManagedResource(description="An interceptor that limits the number of threads that can be in a component at any one time")
-@Order(300)
-public class ConcurrencyLimitingAspect implements Ordered
+@Order(150)
+public class ConcurrencyLimitingAspect
 {
 	private final AtomicInteger threadLimit = new AtomicInteger(20);
 	private final AtomicInteger threadCount = new AtomicInteger();
@@ -50,8 +49,6 @@ public class ConcurrencyLimitingAspect implements Ordered
 	
 	private GraphiteClient graphiteClient;
 	
-	private int order = 0;
-
 //	@Around("@annotation(com.kendelong.util.concurrency.ConcurrencyThrottle)")
 //	public Object applyConcurrencyThrottle(ProceedingJoinPoint pjp) throws Throwable
 	@Around("@annotation(ann)")
@@ -126,17 +123,5 @@ public class ConcurrencyLimitingAspect implements Ordered
 	public void setGraphiteClient(GraphiteClient graphiteClient)
 	{
 		this.graphiteClient = graphiteClient;
-	}
-	
-	@Override
-	public int getOrder()
-	{
-		return order;
-	}
-	
-	public void setOrder(int theOrder)
-	{
-		order = theOrder;
-	}
-
+	}	
 }

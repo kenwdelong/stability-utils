@@ -11,7 +11,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedOperation;
@@ -60,8 +59,8 @@ import com.kendelong.util.monitoring.graphite.GraphiteClient;
  */
 @Aspect
 @ManagedResource(description="Circuit Breaker for protecting ourselves against badly behaving remote services")
-@Order(100)
-public class CircuitBreakerAspect implements Ordered
+@Order(200)
+public class CircuitBreakerAspect
 {	
 	private final AtomicReference<ICircuitBreakerState> state = new AtomicReference<ICircuitBreakerState>();
 	private final int DEFAULT_FAILURE_THRESHOLD = 3;
@@ -76,8 +75,6 @@ public class CircuitBreakerAspect implements Ordered
 	private GraphiteClient graphiteClient;
 	
 	private final ThreadLocal<String> keys = new ThreadLocal<String>();
-	
-	private int order = 0;
 	
 	public CircuitBreakerAspect()
 	{
@@ -253,16 +250,4 @@ public class CircuitBreakerAspect implements Ordered
 	{
 		this.graphiteClient = graphiteClient;
 	}
-
-	@Override
-	public int getOrder()
-	{
-		return order;
-	}
-	
-	public void setOrder(int theOrder)
-	{
-		order = theOrder;
-	}
-
 }

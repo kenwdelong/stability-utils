@@ -12,7 +12,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
@@ -54,14 +53,13 @@ import com.kendelong.util.monitoring.graphite.GraphiteClient;
  */
 @Aspect
 @ManagedResource(description="Retry interceptor that retries operations when a known exception is thrown")
-@Order(200)
-public class RetryInterceptor implements Ordered
+@Order(100)
+public class RetryInterceptor
 {
 	// These are really read-only for JMX
 	private final AtomicInteger maxRetries = new AtomicInteger(2);
 	private final AtomicInteger retryBaseDelayInMs = new AtomicInteger(100);
 
-	private int order = 1;
 	private List<Class<? extends Exception>> exceptionClassesToRetry = new ArrayList<Class<? extends Exception>>();
 	
 	// Instrumentation
@@ -147,17 +145,6 @@ public class RetryInterceptor implements Ordered
 			failedMethods.put(key, counter);
 		}
 		counter.incrementAndGet();
-	}
-
-	@Override
-	public int getOrder()
-	{
-		return this.order;
-	}
-
-	public void setOrder(int order)
-	{
-		this.order = order;
 	}
 
 	public void setExceptionClassesToRetry(List<Class<? extends Exception>> exceptionClasses)
