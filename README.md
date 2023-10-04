@@ -19,7 +19,8 @@ This artifact is available on Maven Central.
 ### HEAD
 - TBD
 
-### 3.0.1 (Oct. 4, 2023)
+### 3.0.2 (Oct. 4, 2023)
+- There was a deployment error with 3.0.1, so I incremented to 3.0.2
 - Change the order on the AOP aspects (see below).
 - Update dependency version management to Spring Boot 3.1.4
 
