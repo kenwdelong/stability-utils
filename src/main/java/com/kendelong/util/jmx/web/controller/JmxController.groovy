@@ -27,7 +27,7 @@ public class JmxController
 	}
 
 	@RequestMapping("/bean/{name:.+}")
-	public Object getBeanData(@PathVariable String name)
+	public Object getBeanData(@PathVariable("name") String name)
 	{
 		return dataRetriever.getMethodData(name)
 	}
