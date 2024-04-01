@@ -12,12 +12,15 @@ This artifact is available on Maven Central.
 	<dependency>
 	    <groupId>com.github.kenwdelong</groupId>
 	    <artifactId>stability-utils</artifactId>
-	    <version>3.0.2</version>
+	    <version>3.0.3</version>
 	</dependency>
 
 ## Releases
 ### HEAD
 - TBD
+
+### 3.0.3 (April 1, 2024)
+- Add explicit path to the "bean" method in `JmxController` because the monitor page was broken.
 
 ### 3.0.2 (Oct. 4, 2023)
 - There was a deployment error with 3.0.1, so I incremented to 3.0.2
