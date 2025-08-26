@@ -99,10 +99,14 @@ public class JmxExportingAspectPostProcessor implements BeanPostProcessor
 	private String getDomain(Object bean)
 	{
 		String webserviceNameElement = nameElementComputer.computeExternalNameElement(bean.getClass());
+		String name; 
 		if(webserviceNameElement == null)
-			return jmxDomain;
+			name = jmxDomain;
 		else
-			return jmxDomain + ".webservice." + webserviceNameElement;
+			name = jmxDomain + ".webservice." + webserviceNameElement;
+		
+		logger.debug("Domain is [{}] for [{}]", name, bean);
+		return name;
 	}
 
 
