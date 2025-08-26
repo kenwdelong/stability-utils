@@ -12,12 +12,15 @@ This artifact is available on Maven Central.
 	<dependency>
 	    <groupId>com.github.kenwdelong</groupId>
 	    <artifactId>stability-utils</artifactId>
-	    <version>3.0.3</version>
+	    <version>3.0.4</version>
 	</dependency>
 
 ## Releases
 ### HEAD
 - TBD
+
+### 3.0.4 (August 26, 2025)
+- Add `@Inherited` to the webservice annotations, so that they are properly namespaced in JMX.
 
 ### 3.0.3 (April 1, 2024)
 - Add explicit path to the "bean" method in `JmxController` because the monitor page was broken.
