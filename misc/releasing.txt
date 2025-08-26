@@ -1,6 +1,7 @@
 MIGRATION: migrated on June 5, 2025
 https://central.sonatype.org/faq/what-is-different-between-central-portal-and-legacy-ossrh/
 https://central.sonatype.org/publish/publish-portal-maven/
+https://central.sonatype.org/pages/ossrh-eol/
 
 
 == Release instructions
