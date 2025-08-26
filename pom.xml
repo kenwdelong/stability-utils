@@ -11,7 +11,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.1.4</version>
+    <version>3.4.7</version>
   </parent>
 
 	<properties>
@@ -131,7 +131,7 @@
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
-			<version>3.4</version>
+			<version>5.6.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -141,7 +141,7 @@
 			<plugin>
 				<groupId>org.codehaus.gmavenplus</groupId>
 				<artifactId>gmavenplus-plugin</artifactId>
-				<version>3.0.2</version>
+				<version>4.2.1</version>
 				<executions>
 					<execution>
 						<goals>
@@ -204,7 +204,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>3.0.1</version>
+				<version>3.1.1</version>
 				<configuration>
 					<arguments>-Dgpg.passphrase="${gpg.passphrase}"</arguments>
 					<releaseProfiles>sign-artifacts-during-release</releaseProfiles>
@@ -215,7 +215,7 @@
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.13</version>
+				<version>1.7.0</version>
 				<extensions>true</extensions>
 				<configuration>
 					<serverId>ossrh</serverId>
@@ -291,7 +291,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>3.1.0</version>
+						<version>3.2.8</version>
 						<configuration>
 							<!-- Configured in settings.xml -->
 							<passphrase>${gpg.passphrase}</passphrase>
