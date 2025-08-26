@@ -9,6 +9,7 @@ mvn release:prepare
 mvn release:perform
 NOTE: I had to update the settings file with the full path to GPG to make it work for 1.7.6
 Check publishing at: https://repo1.maven.org/maven2/com/github/kenwdelong/stability-utils/
+NEW location: https://central.sonatype.com/artifact/com.github.kenwdelong/stability-utils/versions
 
 NO LONGER NECESSARY
 ---
