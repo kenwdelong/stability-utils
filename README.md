@@ -21,6 +21,8 @@ This artifact is available on Maven Central.
 
 ### 3.0.4 (August 26, 2025)
 - Add `@Inherited` to the webservice annotations, so that they are properly namespaced in JMX.
+- Update to Java 21
+- Update to Spring Boot 3.4.7
 
 ### 3.0.3 (April 1, 2024)
 - Add explicit path to the "bean" method in `JmxController` because the monitor page was broken.
