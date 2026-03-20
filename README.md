@@ -17,7 +17,8 @@ This artifact is available on Maven Central.
 
 ## Releases
 ### HEAD
-- TBD
+- Update to Spring boot 4.0.2
+- Update to Java 25
 
 ### 3.0.4 (August 26, 2025)
 - Add `@Inherited` to the webservice annotations, so that they are properly namespaced in JMX.
