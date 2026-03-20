@@ -18,6 +18,9 @@ This artifact is available on Maven Central.
 ## Releases
 ### HEAD
 - Update to Spring boot 4.0.2
+
+### 3.0.5 (March 20, 2026)
+- Update to Spring boot 4.0.2
 - Update to Java 25
 - Update ConcurrencyThrottle: the previous code would use the same aspect instance for each bean. IOW, if there are multiple methods annotated on one Spring Bean,
   they would all share the same counters and one method getting "full" would also block all the other methods.  The limits (now `Semaphore`s) are now per-method.
