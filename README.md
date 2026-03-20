@@ -19,6 +19,8 @@ This artifact is available on Maven Central.
 ### HEAD
 - Update to Spring boot 4.0.2
 - Update to Java 25
+- Update ConcurrencyThrottle: the previous code would use the same aspect instance for each bean. IOW, if there are multiple methods annotated on one Spring Bean,
+  they would all share the same counters and one method getting "full" would also block all the other methods.  The limits (now `Semaphore`s) are now per-method.
 
 ### 3.0.4 (August 26, 2025)
 - Add `@Inherited` to the webservice annotations, so that they are properly namespaced in JMX.

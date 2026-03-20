@@ -9,20 +9,21 @@ import static org.junit.Assert.fail;
 import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.junit.Test;
+import org.aspectj.lang.Signature
 
 import com.kendelong.util.concurrency.ConcurrencyLimitExceededException;
 import com.kendelong.util.concurrency.ConcurrencyLimitingAspect;
 
 public class ConcurrencyLimitingInterceptorTest
 {
+	private Signature signature = { return 'methodName' } as Signature
 
 	@Test(expected=ConcurrencyLimitExceededException.class)
 	public void testZeroLimitBlowsUp() throws Throwable
 	{
 		ConcurrencyThrottle annotation = [ threadLimit: { 0 }, annotationType: { ConcurrencyThrottle.class } ] as ConcurrencyThrottle
 		ConcurrencyLimitingAspect interceptor = new ConcurrencyLimitingAspect();
-		interceptor.setThreadLimit(0);
-		def pjp = {} as ProceedingJoinPoint
+		def pjp = { signature } as ProceedingJoinPoint
 		interceptor.applyConcurrencyThrottle(pjp, annotation);
 		fail("It should have blown up");
 	}
@@ -32,6 +33,7 @@ public class ConcurrencyLimitingInterceptorTest
 	{
 		ConcurrencyThrottle annotation = [ threadLimit: { 20 }, annotationType: { ConcurrencyThrottle.class } ] as ConcurrencyThrottle
 		ProceedingJoinPoint mi = createMock(ProceedingJoinPoint.class);
+		expect(mi.getSignature()).andReturn(signature)
 		expect(mi.proceed()).andReturn(null);
 		replay(mi);
 		

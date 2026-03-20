@@ -1,5 +1,8 @@
 package com.kendelong.util.concurrency;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.StringUtils;
@@ -8,7 +11,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.core.annotation.Order;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
-import org.springframework.jmx.export.annotation.ManagedOperation;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
 import com.kendelong.util.monitoring.graphite.GraphiteClient;
@@ -43,78 +45,79 @@ import com.kendelong.util.monitoring.graphite.GraphiteClient;
 @Order(150)
 public class ConcurrencyLimitingAspect
 {
-	private final AtomicInteger threadLimit = new AtomicInteger(20);
-	private final AtomicInteger threadCount = new AtomicInteger();
-	private final AtomicInteger tripCount = new AtomicInteger();
+	private final Map<String, Integer> threadLimits  = new ConcurrentHashMap<>();  // For displays
+	private final Map<String, AtomicInteger> tripCounts  = new ConcurrentHashMap<>();
+	private final Map<String, Semaphore> semaphores = new ConcurrentHashMap<>();
 	
 	private GraphiteClient graphiteClient;
 	
-//	@Around("@annotation(com.kendelong.util.concurrency.ConcurrencyThrottle)")
-//	public Object applyConcurrencyThrottle(ProceedingJoinPoint pjp) throws Throwable
 	@Around("@annotation(ann)")
 	public Object applyConcurrencyThrottle(ProceedingJoinPoint pjp, ConcurrencyThrottle ann) throws Throwable
 	{
-		this.threadLimit.set(ann.threadLimit());
+		final String methodName = pjp.getSignature().getName();
+		final int threadLimit = ann.threadLimit();
+		threadLimits.computeIfAbsent(methodName, k -> threadLimit);
+	    final Semaphore semaphore = semaphores.computeIfAbsent(methodName, k -> new Semaphore(threadLimit));
+		final AtomicInteger tripCount = tripCounts.computeIfAbsent(methodName, k -> new AtomicInteger());
+				
 		String key = null;
 		if(graphiteClient != null)
 		{
 			String classKey = StringUtils.substringAfterLast(pjp.getSignature().getDeclaringTypeName(), ".");
-			String methodName = pjp.getSignature().getName();
 			key = "concurrencyThrottle." + classKey + "." + methodName;
 			graphiteClient.increment(key + ".accesses");
 		}
 		
-		Object result;
-		try
-		{
-			int threadNum = threadCount.incrementAndGet();
-			if(threadNum > getThreadLimit())
-			{
-				tripCount.incrementAndGet();
-				if(graphiteClient != null) graphiteClient.increment(key + ".trips");
-				throw new ConcurrencyLimitExceededException("This thread exceeded the thread limit of " + getThreadLimit());
-			}
-			result = pjp.proceed();
-		}
-		finally
-		{
-			threadCount.decrementAndGet();
-		}
-		
-		return result;
-		
+	    if(!semaphore.tryAcquire())
+	    {
+	        tripCount.incrementAndGet();
+	        if(graphiteClient != null) graphiteClient.increment(key + ".trips");
+	        throw new ConcurrencyLimitExceededException("This thread exceeded the thread limit of " + threadLimit + " for method " + methodName);
+	    }
+
+	    try
+	    {
+	        return pjp.proceed();
+	    }
+	    finally
+	    {
+	        semaphore.release();
+	    }
 	}
 	
 	@ManagedAttribute(description="The maximum number of threads allowed in the component at one time")
-	public int getThreadLimit()
+	public String getThreadLimit()
 	{
-		return threadLimit.get();
+		StringBuilder sb = new StringBuilder();
+		threadLimits.forEach((k, v) -> sb.append(k).append(": ").append(v).append("; \n"));
+		return sb.toString();
 	}
-	
-	@ManagedAttribute
-	public void setThreadLimit(int val)
-	{
-		threadLimit.set(val);
-	}
-	
+
 	@ManagedAttribute(description="The current number of threads in the component")
-	public int getThreadCount()
+	public String getThreadCount()
 	{
-		return threadCount.get();
+	    StringBuilder sb = new StringBuilder();
+	    semaphores.forEach((k, semaphore) -> {
+	        int total = threadLimits.get(k);
+	        int inUse = total - semaphore.availablePermits();
+	        sb.append(k).append(": ").append(inUse).append(" / ").append(total).append("; \n");
+	    });
+	    return sb.toString();	
 	}
 	
 	@ManagedAttribute(description="The number of accesses that were rejected due to the maximum number of threads being reached")
-	public int getTripCount()
+	public String getTripCount()
 	{
-		return tripCount.get();
+		return formatMap(tripCounts);
 	}
 	
-	@ManagedOperation(description="Reset the trip count to zero")
-	public void resetStatistics()
+	private String formatMap(Map<String, AtomicInteger> map)
 	{
-		tripCount.set(0);
+		StringBuilder sb = new StringBuilder();
+		map.forEach((k, v) -> sb.append(k).append(": ").append(v.get()).append("; \n"));
+		return sb.toString();
 	}
-
+	
 	public GraphiteClient getGraphiteClient()
 	{
 		return graphiteClient;
