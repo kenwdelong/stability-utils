@@ -19,6 +19,7 @@
 <!--		<aspectj.version>1.9.19</aspectj.version>-->
 <!--		<groovy.version>4.0.12</groovy.version>-->
 		<java.version>25</java.version>
+    <groovy.version>5.0.4</groovy.version> <!-- BUG in groovy 5.0.0-5.0.3  Remove this when upgrading Spring Boot -->
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
