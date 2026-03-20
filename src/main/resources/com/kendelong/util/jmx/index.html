@@ -15,6 +15,9 @@
 		tr.parent-shade td {
 			background-color: #C3D5DE;
 		}
+		.pre-line {
+			white-space: pre-line;
+		}
 	</style>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
@@ -117,9 +120,9 @@
 			<tbody>
 			<tr ng-repeat="ct in main.concurrencyThrottles">
 				<td>{{ ct.name }}</td>
-				<td>{{ ct.threadCount }}</td>
-				<td>{{ ct.threadLimit }}</td>
-				<td><button type="button" class="btn btn-{{ ct.tripClass }}">{{ ct.tripCount }}</button></td>
+				<td class="pre-line">{{ ct.threadCounts }}</td>
+				<td class="pre-line">{{ ct.threadLimits }}</td>
+				<td><button type="button" class="btn btn-{{ ct.tripClass }} pre-line">{{ ct.tripCounts }}</button></td>
 			</tr>
 			</tbody>
 		  </table>

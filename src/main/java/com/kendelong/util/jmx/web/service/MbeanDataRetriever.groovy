@@ -107,9 +107,9 @@ public class MbeanDataRetriever
 			def myData = [:]
 			myData['name'] = oname.getKeyProperty('bean')
 			myData['oname'] = oname.toString()
-			myData['threadCount'] = mbeanServer.getAttribute(oname, 'ThreadCount')
-			myData['threadLimit'] = mbeanServer.getAttribute(oname, 'ThreadLimit')
-			myData['tripCount'] = mbeanServer.getAttribute(oname, 'TripCount')
+			myData['threadCounts'] = mbeanServer.getAttribute(oname, 'ThreadCounts')
+			myData['threadLimits'] = mbeanServer.getAttribute(oname, 'ThreadLimits')
+			myData['tripCounts'] = mbeanServer.getAttribute(oname, 'TripCounts')
 			return myData
 		}
 		return data

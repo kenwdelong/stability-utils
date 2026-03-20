@@ -86,35 +86,30 @@ public class ConcurrencyLimitingAspect
 	}
 	
 	@ManagedAttribute(description="The maximum number of threads allowed in the component at one time")
-	public String getThreadLimit()
+	public String getThreadLimits()
 	{
 		StringBuilder sb = new StringBuilder();
-		threadLimits.forEach((k, v) -> sb.append(k).append(": ").append(v).append("; \n"));
+		threadLimits.forEach((k, v) -> sb.append(k).append(": ").append(v).append("\n"));
 		return sb.toString();
 	}
 
 	@ManagedAttribute(description="The current number of threads in the component")
-	public String getThreadCount()
+	public String getThreadCounts()
 	{
 	    StringBuilder sb = new StringBuilder();
 	    semaphores.forEach((k, semaphore) -> {
 	        int total = threadLimits.get(k);
 	        int inUse = total - semaphore.availablePermits();
-	        sb.append(k).append(": ").append(inUse).append(" / ").append(total).append("; \n");
+	        sb.append(k).append(": ").append(inUse).append(" / ").append(total).append("\n");
 	    });
 	    return sb.toString();	
 	}
 	
 	@ManagedAttribute(description="The number of accesses that were rejected due to the maximum number of threads being reached")
-	public String getTripCount()
-	{
-		return formatMap(tripCounts);
-	}
-	
-	private String formatMap(Map<String, AtomicInteger> map)
+	public String getTripCounts()
 	{
 		StringBuilder sb = new StringBuilder();
-		map.forEach((k, v) -> sb.append(k).append(": ").append(v.get()).append("; \n"));
+		tripCounts.forEach((k, v) -> sb.append(k).append(": ").append(v.get()).append("\n"));
 		return sb.toString();
 	}
 	
