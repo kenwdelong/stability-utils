@@ -66,7 +66,7 @@ public class MbeanDataRetriever
 				myData['rpm'] = new BigDecimal(monitor.getAccessesPerMinute()).round(sigFigs).doubleValue()
 				myData['ex'] = monitor.getNumberOfExceptions()
 				myData['numAccess'] = monitor.getNumberOfAccesses()
-				myData['cumulative'] = new BigDecimal(monitor.getCumulativeTime()).round(sigFigs).doubleValue()
+				myData['cumulative'] = monitor.getCumulativeTime()
 				return myData
 			}
 			return datalist

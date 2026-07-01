@@ -91,8 +91,8 @@ public class PerformanceMonitor
 		return numberOfExceptions.get();
 	}
 	
-	public double getCumulativeTime()
+	public int getCumulativeTime()
 	{
-		return getAverageResponseTime()*getNumberOfAccesses();
+		return (int) (getAverageResponseTime()*getNumberOfAccesses());
 	}
 }

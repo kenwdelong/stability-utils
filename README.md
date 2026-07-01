@@ -18,6 +18,7 @@ This artifact is available on Maven Central.
 ## Releases
 ### HEAD
 - Update to Spring boot 4.0.2
+- Change cumultative times on performance monitor to integers (they are generally very large, no need for decimals)
 
 ### 3.0.5 (March 20, 2026)
 - Update to Spring boot 4.0.2
